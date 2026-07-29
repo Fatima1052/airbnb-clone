@@ -1,65 +1,67 @@
-import "./Footer.css";
+
 
 function Footer() {
   return (
-    <footer className="footer">
+    <footer className="bg-[#f7f7f7] px-12 py-12">
 
-      <div className="footer-container">
+      <div className="grid grid-cols-3 gap-20">
 
-        <div className="footer-column">
+       <div>
 
-          <h3>Support</h3>
+          <h3 className="mb-5 text-[16px] font-semibold text-[#222222]">Support</h3>
 
-          <p>Help Center</p>
-          <p>Get help with a safety issue</p>
-          <p>AirCover</p>
-          <p>Travel insurance</p>
-          <p>Anti-discrimination</p>
-          <p>Disability support</p>
-          <p>Cancellation options</p>
-          <p>Report neighborhood concern</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Help Center</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Get help with a safety issue</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">AirCover</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Travel insurance</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Anti-discrimination</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Disability support</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Cancellation options</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Report neighborhood concern</p>
 
         </div>
 
-        <div className="footer-column">
+        <div>
 
-          <h3>Hosting</h3>
+          <h3 className="mb-5 text-[16px] font-semibold text-[#222222]">Hosting</h3>
 
-          <p>Airbnb your home</p>
-          <p>Airbnb your experience
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Airbnb your home</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Airbnb your experience
 </p>
-          <p>Airbnb your service</p>
-          <p>AirCover for Hosts</p>
-          <p>Hosting resources</p>
-          <p>Community forum</p>
-          <p>Hosting responsibly</p>
-          <p>Airbnb-friendly apartments</p>
-          <p>Join a free hosting class</p>
-          <p>Find a co‑host</p>
-          <p>Refer a host</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Airbnb your service</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">AirCover for Hosts</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Hosting resources</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Community forum</p>
+         <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Hosting responsibly</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Airbnb-friendly apartments</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Join a free hosting class</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Find a co‑host</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Refer a host</p>
         </div>
 
-        <div className="footer-column">
+       <div>
 
-          <h3>Airbnb</h3>
+        <h3 className="mb-5 text-[16px] font-semibold text-[#222222]">Airbnb</h3>
 
-          <p>Newsroom</p>
-          <p>Careers</p>
-          <p>Investors</p>
-          <p>Gift cards</p>
-          <p>Airbnb.org emergency stays</p>
+         <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Newsroom</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Careers</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Investors</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Gift cards</p>
+          <p className="mb-[14px] cursor-pointer text-[15px] text-[#6A6A6A] hover:underline">Airbnb.org emergency stays</p>
 
         </div>
 
       </div>
 
-      <hr />
+      <hr className="my-10 border-0 border-t border-[#dddddd]" />
 
-      <div className="footer-bottom">
+     <div className="flex items-center justify-between">
 
-        <p>© 2026 Airbnb, Inc. · Privacy · Terms · Your Privacy Choices</p>
+       <p className="text-[14px] text-[#6A6A6A]">
+  © 2026 Airbnb, Inc. · Privacy · Terms · Your Privacy Choices
+</p>
 
-        <div className="footer-right">
+        <div className="flex gap-[25px] text-[14px] text-[#222222]">
 
           <span>🌐 English (US)</span>
 

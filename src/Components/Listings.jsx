@@ -1,4 +1,4 @@
-import "./Listings.css";
+
 import PropertyCard from "./PropertyCard";
 import {
   FiArrowRight,
@@ -31,25 +31,24 @@ const scrollRight = () => {
 
   return (
 
-    <section className="listing-section">
-<div className="section-header">
+    <section className="px-[32px] pt-[24px] pb-[8px]">
+<div className="mb-[25px] flex items-center justify-between">
 
-  <div className="section-title-wrapper">
-
+  <div className="flex items-center gap-3">
     <div>
 
-      <div className="title-row">
-        <h2 className="section-title">
+      <div className="flex items-center gap-2">
+       <h2 className="m-0 text-[25px] font-semibold text-[#222222]">
           {title}
         </h2>
 
-        <div className="title-arrow">
+       <div className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full bg-[#f2f2f2] transition hover:bg-[#e5e5e5]">
           <FiArrowRight />
         </div>
       </div>
 
       {subtitle && (
-        <p className="section-subtitle">
+       <p className="mt-[6px] text-[16px] text-[#6a6a6a]">
           {subtitle}
         </p>
       )}
@@ -58,13 +57,19 @@ const scrollRight = () => {
 
   </div>
 
-  <div className="slider-buttons">
+ <div className="flex gap-[10px]">
 
-    <button onClick={scrollLeft}>
+   <button
+  onClick={scrollLeft}
+  className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#f2f2f2] transition hover:bg-[#e5e5e5]"
+>
       <FiChevronLeft />
     </button>
 
-    <button onClick={scrollRight}>
+   <button
+  onClick={scrollRight}
+  className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#f2f2f2] transition hover:bg-[#e5e5e5]"
+>
       <FiChevronRight />
     </button>
 
@@ -73,8 +78,9 @@ const scrollRight = () => {
 </div>
    
 <div
-    className="listing-container"
-    ref={sliderRef}
+  ref={sliderRef}
+ 
+className="flex gap-[17px] overflow-x-hidden scroll-smooth"
 >
 
           {listings.map((listing) => (
