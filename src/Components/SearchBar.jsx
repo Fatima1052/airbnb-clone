@@ -68,9 +68,9 @@ ${activeSection === "when" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
         onClick={() => setActiveSection("when")}
       >
         <h4 className="m-0 text-[14px] font-semibold">When</h4>
-       <p className="mt-[5px] text-[13px] text-gray-500">
-  {startDate
-    ? startDate.toLocaleDateString()
+     <p className="mt-[5px] text-[13px] text-gray-500">
+  {startDate && endDate
+    ? `${startDate.format("DD MMM")} - ${endDate.format("DD MMM")}`
     : "Add dates"}
 </p>
       </div>
@@ -163,13 +163,16 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
       )}
 
 
-  {activeSection === "when" && (
+{activeSection === "when" && (
   <div className="absolute left-1/2 top-[70px] z-[9999] -translate-x-1/2 rounded-[32px] bg-white p-8 shadow-lg">
-    <Calendar />
+    <Calendar
+      startDate={startDate}
+      endDate={endDate}
+      setStartDate={setStartDate}
+      setEndDate={setEndDate}
+    />
   </div>
 )}
-
-
 
 
 
