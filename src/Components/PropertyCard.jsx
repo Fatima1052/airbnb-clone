@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+
 import { Link } from "react-router-dom";
 function PropertyCard({ id,image, title, price, rating, guestFavorite, original, location }){
    

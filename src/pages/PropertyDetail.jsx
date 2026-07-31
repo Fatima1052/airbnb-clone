@@ -5,8 +5,6 @@ import { useState } from "react";
 function PropertyDetail() {
   const [selectedPrice, setSelectedPrice] = useState("all");
 const [selectedType, setSelectedType] = useState("all");
-const [showPrice, setShowPrice] = useState(false);
-const [showType, setShowType] = useState(false);
 
   const { id } = useParams();
 
