@@ -1,7 +1,6 @@
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useState, useRef, useEffect } from "react";
 
+import { useState, useRef, useEffect } from "react";
+import Calendar from "./Calender";
 function SearchBar() {
   const searchRef = useRef(null);
 
@@ -164,23 +163,12 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
       )}
 
 
-{activeSection === "when" && (
-  <div className="absolute left-1/2 top-[70px] z-[9999] w-[900px] -translate-x-1/2 rounded-[32px] bg-white p-8 shadow-lg">
-    <DatePicker
-  selected={startDate}
-  onChange={(dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  }}
-  startDate={startDate}
-  endDate={endDate}
-  selectsRange
-  inline
-  monthsShown={2}
-/>
+  {activeSection === "when" && (
+  <div className="absolute left-1/2 top-[70px] z-[9999] -translate-x-1/2 rounded-[32px] bg-white p-8 shadow-lg">
+    <Calendar />
   </div>
 )}
+
 
 
 
