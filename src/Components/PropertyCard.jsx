@@ -1,9 +1,15 @@
-
-
-function PropertyCard({ image, title, price, rating, guestFavorite, original, location }){
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+function PropertyCard({ id,image, title, price, rating, guestFavorite, original, location }){
+   
+  
     return(
 
-    <div className="w-[185px] shrink-0 cursor-pointer">
+   <Link to={`/property/${id}`}>
+<div
+  className="w-[185px] shrink-0 cursor-pointer"
+
+>
 <div className="relative h-[185px] w-full overflow-hidden rounded-[14px]">
 {guestFavorite && (
    <div className="absolute left-[14px] top-[14px] z-[2] rounded-[18px] bg-white px-[10px] py-[5px] text-[12px] font-semibold text-[#222222] shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
@@ -64,6 +70,7 @@ function PropertyCard({ image, title, price, rating, guestFavorite, original, lo
 
         </div>
 
+</Link>
     )
 
 }

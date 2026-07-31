@@ -87,6 +87,9 @@ export const popularHomes = [
     id: 1,
     image: house1,
     title: "Room in Islamabad",
+     description: "Rooftop basic private room F-6/1",
+  details: "1 bedroom · 1 bed · 1 private bath",
+  date: "Aug 7 – 9",
     price: "$46 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
@@ -139,7 +142,7 @@ export const popularHomes = [
 
 export const greatHotels = [
   {
-    id: 1,
+    id: 7,
     image: hotel1,
     title: "Hotel in Islamabad",
     price: "$78 for 2 nights",
@@ -147,7 +150,7 @@ export const greatHotels = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 8,
     image: hotel2,
     title: "Luxury Hotel",
     price: "$92 for 2 nights",
@@ -155,7 +158,7 @@ export const greatHotels = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 9,
     image: hotel3,
     title: "Boutique Hotel",
     price: "$65 for 2 nights",
@@ -163,7 +166,7 @@ export const greatHotels = [
     guestFavorite: false,
   },
   {
-    id: 4,
+    id: 10,
     image: hotel4,
     title: "Modern Hotel",
     price: "$81 for 2 nights",
@@ -171,7 +174,7 @@ export const greatHotels = [
     guestFavorite: true,
   },
   {
-    id: 5,
+    id: 11,
     image: hotel5,
     title: "Resort Hotel",
     price: "$105 for 2 nights",
@@ -179,7 +182,7 @@ export const greatHotels = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 12,
     image: hotel6,
     title: "City Hotel",
     price: "$70 for 2 nights",
@@ -192,7 +195,7 @@ export const greatHotels = [
 
 export const weekendHomes = [
   {
-    id: 1,
+    id: 13,
     image: weekend1,
     title: "Apartment in Lahore",
     price: "$65 for 2 nights",
@@ -200,7 +203,7 @@ export const weekendHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 14,
     image: weekend2,
     title: "Room in Lahore",
     price: "$48 for 2 nights",
@@ -208,7 +211,7 @@ export const weekendHomes = [
     guestFavorite: false,
   },
   {
-    id: 3,
+    id: 15,
     image: weekend3,
     title: "Luxury Apartment",
     price: "$85 for 2 nights",
@@ -216,7 +219,7 @@ export const weekendHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 16,
     image: weekend4,
     title: "Modern Condo",
     price: "$72 for 2 nights",
@@ -224,7 +227,7 @@ export const weekendHomes = [
     guestFavorite: true,
   },
   {
-    id: 5,
+    id: 17,
     image: weekend5,
     title: "Family Home",
     price: "$58 for 2 nights",
@@ -232,7 +235,7 @@ export const weekendHomes = [
     guestFavorite: false,
   },
   {
-    id: 6,
+    id: 18,
     image: weekend6,
     title: "Studio Apartment",
     price: "$55 for 2 nights",
@@ -248,7 +251,7 @@ export const weekendHomes = [
 
 export const stayInMurree = [
   {
-    id: 1,
+    id: 19,
     image: muree1,
     title: "Cabin in Murree",
     price: "$68 for 2 nights",
@@ -256,7 +259,7 @@ export const stayInMurree = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 20,
     image: muree2,
     title: "Mountain Cottage",
     price: "$74 for 2 nights",
@@ -264,7 +267,7 @@ export const stayInMurree = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 21,
     image: muree3,
     title: "Luxury Apartment",
     price: "$81 for 2 nights",
@@ -272,7 +275,7 @@ export const stayInMurree = [
     guestFavorite: false,
   },
   {
-    id: 4,
+    id: 22,
     image: muree4,
     title: "Forest View Home",
     price: "$63 for 2 nights",
@@ -280,7 +283,7 @@ export const stayInMurree = [
     guestFavorite: true,
   },
   {
-    id: 5,
+    id: 23,
     image: muree5,
     title: "Family Cottage",
     price: "$72 for 2 nights",
@@ -288,7 +291,7 @@ export const stayInMurree = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 24,
     image: muree6,
     title: "Wooden Cabin",
     price: "$85 for 2 nights",
@@ -303,7 +306,7 @@ export const stayInMurree = [
 
 export const nathiaGaliHomes = [
   {
-    id: 1,
+    id: 25,
     image: nathia1,
     title: "Cabin in Nathia Gali",
     price: "$72 for 2 nights",
@@ -311,7 +314,7 @@ export const nathiaGaliHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 26,
     image: nathia2,
     title: "Mountain Cottage",
     price: "$81 for 2 nights",
@@ -319,7 +322,7 @@ export const nathiaGaliHomes = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 27,
     image: nathia3,
     title: "Luxury Chalet",
     price: "$96 for 2 nights",
@@ -327,7 +330,7 @@ export const nathiaGaliHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 28,
     image: nathia4,
     title: "Forest Cabin",
     price: "$68 for 2 nights",
@@ -335,7 +338,7 @@ export const nathiaGaliHomes = [
     guestFavorite: false,
   },
   {
-    id: 5,
+    id: 29,
     image: nathia5,
     title: "Family Lodge",
     price: "$75 for 2 nights",
@@ -343,7 +346,7 @@ export const nathiaGaliHomes = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 30,
     image: nathia6,
     title: "Nature Stay",
     price: "$70 for 2 nights",
@@ -356,7 +359,7 @@ export const nathiaGaliHomes = [
 
 export const karachiHomes = [
   {
-    id: 1,
+    id: 31,
     image: karachi1,
     title: "Apartment in Karachi",
     price: "$64 for 2 nights",
@@ -364,7 +367,7 @@ export const karachiHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 32,
     image: karachi2,
     title: "Sea View Apartment",
     price: "$88 for 2 nights",
@@ -372,7 +375,7 @@ export const karachiHomes = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 33,
     image: karachi3,
     title: "Luxury Condo",
     price: "$94 for 2 nights",
@@ -380,7 +383,7 @@ export const karachiHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 34,
     image: karachi4,
     title: "Modern Studio",
     price: "$58 for 2 nights",
@@ -388,7 +391,7 @@ export const karachiHomes = [
     guestFavorite: false,
   },
   {
-    id: 5,
+    id: 35,
     image: karachi5,
     title: "Family Home",
     price: "$71 for 2 nights",
@@ -396,7 +399,7 @@ export const karachiHomes = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 36,
     image: karachi6,
     title: "Beach House",
     price: "$110 for 2 nights",
@@ -410,7 +413,7 @@ export const karachiHomes = [
 
 export const faisalabadHomes = [
   {
-    id: 1,
+    id: 37,
     image: faisalabad1,
     title: "Apartment in Faisalabad",
     price: "$54 for 2 nights",
@@ -418,7 +421,7 @@ export const faisalabadHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 38,
     image: faisalabad2,
     title: "Room in Faisalabad",
     price: "$46 for 2 nights",
@@ -426,7 +429,7 @@ export const faisalabadHomes = [
     guestFavorite: false,
   },
   {
-    id: 3,
+    id: 39,
     image: faisalabad3,
     title: "Luxury Home",
     price: "$72 for 2 nights",
@@ -434,7 +437,7 @@ export const faisalabadHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 40,
     image: faisalabad4,
     title: "Modern Apartment",
     price: "$60 for 2 nights",
@@ -442,7 +445,7 @@ export const faisalabadHomes = [
     guestFavorite: true,
   },
   {
-    id: 5,
+    id: 41,
     image: faisalabad5,
     title: "Family House",
     price: "$58 for 2 nights",
@@ -450,7 +453,7 @@ export const faisalabadHomes = [
     guestFavorite: false,
   },
   {
-    id: 6,
+    id: 42,
     image: faisalabad6,
     title: "City View Apartment",
     price: "$67 for 2 nights",
@@ -464,7 +467,7 @@ export const faisalabadHomes = [
 
 export const dubaiPlaces = [
   {
-    id: 1,
+    id: 43,
     image: dubai1,
     title: "Apartment in Dubai",
     price: "$135 for 2 nights",
@@ -472,7 +475,7 @@ export const dubaiPlaces = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 44,
     image: dubai2,
     title: "Luxury Marina Apartment",
     price: "$168 for 2 nights",
@@ -480,7 +483,7 @@ export const dubaiPlaces = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 45,
     image: dubai3,
     title: "Palm Jumeirah Villa",
     price: "$295 for 2 nights",
@@ -488,7 +491,7 @@ export const dubaiPlaces = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 46,
     image: dubai4,
     title: "Downtown Studio",
     price: "$142 for 2 nights",
@@ -496,7 +499,7 @@ export const dubaiPlaces = [
     guestFavorite: false,
   },
   {
-    id: 5,
+    id: 47,
     image: dubai5,
     title: "Burj View Apartment",
     price: "$185 for 2 nights",
@@ -504,7 +507,7 @@ export const dubaiPlaces = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 48,
     image: dubai6,
     title: "Beach Resort Suite",
     price: "$220 for 2 nights",
@@ -518,7 +521,7 @@ export const dubaiPlaces = [
 
 export const bhurbanHomes = [
   {
-    id: 1,
+    id: 49,
     image: bhurbun1,
     title: "Luxury Cottage",
     price: "$78 for 2 nights",
@@ -526,7 +529,7 @@ export const bhurbanHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 50,
     image: bhurbun2,
     title: "Mountain Cabin",
     price: "$72 for 2 nights",
@@ -534,7 +537,7 @@ export const bhurbanHomes = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 51,
     image: bhurbun3,
     title: "Resort Villa",
     price: "$105 for 2 nights",
@@ -542,7 +545,7 @@ export const bhurbanHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 52,
     image: bhurbun4,
     title: "Forest View Home",
     price: "$68 for 2 nights",
@@ -550,7 +553,7 @@ export const bhurbanHomes = [
     guestFavorite: false,
   },
   {
-    id: 5,
+    id: 53,
     image: bhurbun5,
     title: "Family Cottage",
     price: "$74 for 2 nights",
@@ -558,7 +561,7 @@ export const bhurbanHomes = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 54,
     image: bhurbun6,
     title: "Premium Chalet",
     price: "$89 for 2 nights",
@@ -573,7 +576,7 @@ export const bhurbanHomes = [
 
 export const istanbulHomes = [
   {
-    id: 1,
+    id: 55,
     image: istanbul1,
     title: "Apartment in Istanbul",
     price: "$115 for 2 nights",
@@ -581,7 +584,7 @@ export const istanbulHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 56,
     image: istanbul2,
     title: "Historic City Home",
     price: "$98 for 2 nights",
@@ -589,7 +592,7 @@ export const istanbulHomes = [
     guestFavorite: true,
   },
   {
-    id: 3,
+    id: 57,
     image: istanbul3,
     title: "Luxury Bosphorus View",
     price: "$165 for 2 nights",
@@ -597,7 +600,7 @@ export const istanbulHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 58,
     image: istanbul4,
     title: "Modern Studio",
     price: "$84 for 2 nights",
@@ -605,7 +608,7 @@ export const istanbulHomes = [
     guestFavorite: false,
   },
   {
-    id: 5,
+    id: 59,
     image: istanbul5,
     title: "Family Apartment",
     price: "$102 for 2 nights",
@@ -613,7 +616,7 @@ export const istanbulHomes = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 60,
     image: istanbul6,
     title: "Old Town Stay",
     price: "$109 for 2 nights",
@@ -627,7 +630,7 @@ export const istanbulHomes = [
 
 export const bakuHomes = [
   {
-    id: 1,
+    id: 61,
     image: baku1,
     title: "Apartment in Baku",
     price: "$92 for 2 nights",
@@ -635,7 +638,7 @@ export const bakuHomes = [
     guestFavorite: true,
   },
   {
-    id: 2,
+    id: 62,
     image: baku2,
     title: "City Center Studio",
     price: "$78 for 2 nights",
@@ -643,7 +646,7 @@ export const bakuHomes = [
     guestFavorite: false,
   },
   {
-    id: 3,
+    id: 63,
     image: baku3,
     title: "Luxury Sea View",
     price: "$135 for 2 nights",
@@ -651,7 +654,7 @@ export const bakuHomes = [
     guestFavorite: true,
   },
   {
-    id: 4,
+    id: 64,
     image: baku4,
     title: "Modern Apartment",
     price: "$88 for 2 nights",
@@ -659,7 +662,7 @@ export const bakuHomes = [
     guestFavorite: true,
   },
   {
-    id: 5,
+    id: 65,
     image: baku5,
     title: "Family Home",
     price: "$95 for 2 nights",
@@ -667,11 +670,26 @@ export const bakuHomes = [
     guestFavorite: true,
   },
   {
-    id: 6,
+    id: 66,
     image: baku6,
     title: "Luxury Residence",
     price: "$148 for 2 nights",
     rating: "5.0",
     guestFavorite: true,
   },
+];
+
+
+export const allListings = [
+  ...popularHomes,
+  ...greatHotels,
+  ...weekendHomes,
+  ...stayInMurree,
+  ...nathiaGaliHomes,
+  ...karachiHomes,
+  ...faisalabadHomes,
+  ...dubaiPlaces,
+  ...bhurbanHomes,
+  ...istanbulHomes,
+  ...bakuHomes,
 ];

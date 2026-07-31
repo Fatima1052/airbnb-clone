@@ -88,7 +88,7 @@ className="flex gap-[17px] overflow-x-hidden scroll-smooth"
 <PropertyCard
 
 key={listing.id}
-
+id={listing.id}
 image={listing.image}
 title={listing.title}
 price={listing.price}

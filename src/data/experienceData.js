@@ -81,7 +81,7 @@ export const airbnbOriginals = [
 export const kualalumpurexperience = [
 
     {
- id:1,
+ id:7,
  image:kualalumpur1 ,
  title:"Hidden Bar Hopping With A Local",
  
@@ -91,7 +91,7 @@ export const kualalumpurexperience = [
 },
 
 {
- id:2,
+ id:8,
  image:kualalumpur2,
  title:"Authentic Malaysian Street Food Tour Kampung Baru",
 
@@ -101,7 +101,7 @@ export const kualalumpurexperience = [
 },
 
 {
- id:3,
+ id:9,
  image:kualalumpur3,
  title:"Explore 7 Wonders Of Kuala Lumpur With A Local",
  price:"From $57 / guest",
@@ -110,7 +110,7 @@ export const kualalumpurexperience = [
 },
 
 {
- id:4,
+ id:10,
  image:kualalumpur4,
  title:"Explore Kuala Lumpur with Local Uncle",
 
@@ -120,7 +120,7 @@ export const kualalumpurexperience = [
 },
 
 {
- id:5,
+ id:11,
  image:kualalumpur5,
  title:"Sambal Streets Food Tour with 15-plus tastings",
 
@@ -130,7 +130,7 @@ export const kualalumpurexperience = [
 },
 
 {
- id:6,
+ id:12,
  image:kualalumpur6,
  title:"Step Into Batu Caves-Hidden Gems, Monkeys & Myths",
 
