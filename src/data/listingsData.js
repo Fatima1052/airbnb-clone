@@ -93,6 +93,7 @@ export const popularHomes = [
     price: "$46 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 2,
@@ -101,6 +102,7 @@ export const popularHomes = [
     price: "$58 for 2 nights",
     rating: "4.88",
     guestFavorite: false,
+     location: "Islamabad",
   },
   {
     id: 3,
@@ -109,6 +111,7 @@ export const popularHomes = [
     price: "$82 for 2 nights",
     rating: "4.95",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 4,
@@ -117,6 +120,7 @@ export const popularHomes = [
     price: "$65 for 2 nights",
     rating: "4.89",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 5,
@@ -125,6 +129,7 @@ export const popularHomes = [
     price: "$52 for 2 nights",
     rating: "4.93",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 6,
@@ -133,6 +138,7 @@ export const popularHomes = [
     price: "$74 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+     location: "Islamabad",
   },
 ];
 
@@ -148,6 +154,7 @@ export const greatHotels = [
     price: "$78 for 2 nights",
     rating: "4.95",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 8,
@@ -156,6 +163,7 @@ export const greatHotels = [
     price: "$92 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 9,
@@ -164,6 +172,7 @@ export const greatHotels = [
     price: "$65 for 2 nights",
     rating: "4.88",
     guestFavorite: false,
+     location: "Islamabad",
   },
   {
     id: 10,
@@ -172,6 +181,7 @@ export const greatHotels = [
     price: "$81 for 2 nights",
     rating: "4.93",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 11,
@@ -180,6 +190,7 @@ export const greatHotels = [
     price: "$105 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+     location: "Islamabad",
   },
   {
     id: 12,
@@ -188,6 +199,7 @@ export const greatHotels = [
     price: "$70 for 2 nights",
     rating: "4.90",
     guestFavorite: false,
+     location: "Islamabad",
   },
 ];
 
@@ -201,6 +213,7 @@ export const weekendHomes = [
     price: "$65 for 2 nights",
     rating: "4.92",
     guestFavorite: true,
+    location: "Lahore",
   },
   {
     id: 14,
@@ -209,6 +222,7 @@ export const weekendHomes = [
     price: "$48 for 2 nights",
     rating: "4.89",
     guestFavorite: false,
+    location: "Lahore",
   },
   {
     id: 15,
@@ -217,6 +231,7 @@ export const weekendHomes = [
     price: "$85 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+    location: "Lahore",
   },
   {
     id: 16,
@@ -225,6 +240,7 @@ export const weekendHomes = [
     price: "$72 for 2 nights",
     rating: "4.90",
     guestFavorite: true,
+    location: "Lahore",
   },
   {
     id: 17,
@@ -233,6 +249,7 @@ export const weekendHomes = [
     price: "$58 for 2 nights",
     rating: "4.88",
     guestFavorite: false,
+    location: "Lahore",
   },
   {
     id: 18,
@@ -241,6 +258,7 @@ export const weekendHomes = [
     price: "$55 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+    location: "Lahore",
   },
 ];
 
@@ -257,6 +275,8 @@ export const stayInMurree = [
     price: "$68 for 2 nights",
     rating: "4.94",
     guestFavorite: true,
+    location: "Murree",
+
   },
   {
     id: 20,
@@ -265,6 +285,7 @@ export const stayInMurree = [
     price: "$74 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+     location: "Murree",
   },
   {
     id: 21,
@@ -273,6 +294,7 @@ export const stayInMurree = [
     price: "$81 for 2 nights",
     rating: "4.96",
     guestFavorite: false,
+     location: "Murree",
   },
   {
     id: 22,
@@ -281,6 +303,7 @@ export const stayInMurree = [
     price: "$63 for 2 nights",
     rating: "4.89",
     guestFavorite: true,
+     location: "Murree",
   },
   {
     id: 23,
@@ -289,6 +312,7 @@ export const stayInMurree = [
     price: "$72 for 2 nights",
     rating: "4.93",
     guestFavorite: true,
+     location: "Murree",
   },
   {
     id: 24,
@@ -297,6 +321,7 @@ export const stayInMurree = [
     price: "$85 for 2 nights",
     rating: "4.98",
     guestFavorite: true,
+     location: "Murree",
   },
 ];
 
@@ -312,6 +337,7 @@ export const nathiaGaliHomes = [
     price: "$72 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+     location: "Nathia Gali",
   },
   {
     id: 26,
@@ -320,6 +346,7 @@ export const nathiaGaliHomes = [
     price: "$81 for 2 nights",
     rating: "4.92",
     guestFavorite: true,
+     location: "Nathia Gali",
   },
   {
     id: 27,
@@ -328,6 +355,7 @@ export const nathiaGaliHomes = [
     price: "$96 for 2 nights",
     rating: "4.98",
     guestFavorite: true,
+     location: "Nathia Gali",
   },
   {
     id: 28,
@@ -336,6 +364,7 @@ export const nathiaGaliHomes = [
     price: "$68 for 2 nights",
     rating: "4.89",
     guestFavorite: false,
+     location: "Nathia Gali",
   },
   {
     id: 29,
@@ -344,6 +373,7 @@ export const nathiaGaliHomes = [
     price: "$75 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+     location: "Nathia Gali",
   },
   {
     id: 30,
@@ -352,6 +382,7 @@ export const nathiaGaliHomes = [
     price: "$70 for 2 nights",
     rating: "4.94",
     guestFavorite: true,
+     location: "Nathia Gali",
   },
 ];
 
@@ -365,6 +396,7 @@ export const karachiHomes = [
     price: "$64 for 2 nights",
     rating: "4.90",
     guestFavorite: true,
+     location: "Karachi",
   },
   {
     id: 32,
@@ -373,6 +405,7 @@ export const karachiHomes = [
     price: "$88 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+      location: "Karachi",
   },
   {
     id: 33,
@@ -381,6 +414,7 @@ export const karachiHomes = [
     price: "$94 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+      location: "Karachi",
   },
   {
     id: 34,
@@ -389,6 +423,7 @@ export const karachiHomes = [
     price: "$58 for 2 nights",
     rating: "4.87",
     guestFavorite: false,
+      location: "Karachi",
   },
   {
     id: 35,
@@ -397,6 +432,7 @@ export const karachiHomes = [
     price: "$71 for 2 nights",
     rating: "4.92",
     guestFavorite: true,
+      location: "Karachi",
   },
   {
     id: 36,
@@ -405,6 +441,7 @@ export const karachiHomes = [
     price: "$110 for 2 nights",
     rating: "4.99",
     guestFavorite: true,
+      location: "Karachi",
   },
 ];
 
@@ -419,6 +456,7 @@ export const faisalabadHomes = [
     price: "$54 for 2 nights",
     rating: "4.90",
     guestFavorite: true,
+      location: "Faisalabad",
   },
   {
     id: 38,
@@ -427,6 +465,7 @@ export const faisalabadHomes = [
     price: "$46 for 2 nights",
     rating: "4.88",
     guestFavorite: false,
+      location: "Faisalabad",
   },
   {
     id: 39,
@@ -435,6 +474,7 @@ export const faisalabadHomes = [
     price: "$72 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+      location: "Faisalabad",
   },
   {
     id: 40,
@@ -443,6 +483,7 @@ export const faisalabadHomes = [
     price: "$60 for 2 nights",
     rating: "4.91",
     guestFavorite: true,
+      location: "Faisalabad",
   },
   {
     id: 41,
@@ -451,6 +492,7 @@ export const faisalabadHomes = [
     price: "$58 for 2 nights",
     rating: "4.89",
     guestFavorite: false,
+      location: "Faisalabad",
   },
   {
     id: 42,
@@ -459,6 +501,7 @@ export const faisalabadHomes = [
     price: "$67 for 2 nights",
     rating: "4.94",
     guestFavorite: true,
+      location: "Faisalabad",
   },
 ];
 
@@ -473,6 +516,7 @@ export const dubaiPlaces = [
     price: "$135 for 2 nights",
     rating: "4.98",
     guestFavorite: true,
+    location: "Dubai",
   },
   {
     id: 44,
@@ -481,6 +525,7 @@ export const dubaiPlaces = [
     price: "$168 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+     location: "Dubai",
   },
   {
     id: 45,
@@ -489,6 +534,7 @@ export const dubaiPlaces = [
     price: "$295 for 2 nights",
     rating: "5.0",
     guestFavorite: true,
+     location: "Dubai",
   },
   {
     id: 46,
@@ -497,6 +543,7 @@ export const dubaiPlaces = [
     price: "$142 for 2 nights",
     rating: "4.93",
     guestFavorite: false,
+     location: "Dubai",
   },
   {
     id: 47,
@@ -505,6 +552,7 @@ export const dubaiPlaces = [
     price: "$185 for 2 nights",
     rating: "4.99",
     guestFavorite: true,
+     location: "Dubai",
   },
   {
     id: 48,
@@ -513,6 +561,7 @@ export const dubaiPlaces = [
     price: "$220 for 2 nights",
     rating: "5.0",
     guestFavorite: true,
+     location: "Dubai",
   },
 ];
 
@@ -527,6 +576,7 @@ export const bhurbanHomes = [
     price: "$78 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+     location: "Bhurban",
   },
   {
     id: 50,
@@ -535,6 +585,7 @@ export const bhurbanHomes = [
     price: "$72 for 2 nights",
     rating: "4.92",
     guestFavorite: true,
+     location: "Bhurban",
   },
   {
     id: 51,
@@ -543,6 +594,7 @@ export const bhurbanHomes = [
     price: "$105 for 2 nights",
     rating: "4.98",
     guestFavorite: true,
+     location: "Bhurban",
   },
   {
     id: 52,
@@ -551,6 +603,7 @@ export const bhurbanHomes = [
     price: "$68 for 2 nights",
     rating: "4.91",
     guestFavorite: false,
+     location: "Bhurban",
   },
   {
     id: 53,
@@ -559,6 +612,7 @@ export const bhurbanHomes = [
     price: "$74 for 2 nights",
     rating: "4.95",
     guestFavorite: true,
+     location: "Bhurban",
   },
   {
     id: 54,
@@ -567,6 +621,7 @@ export const bhurbanHomes = [
     price: "$89 for 2 nights",
     rating: "4.99",
     guestFavorite: true,
+     location: "Bhurban",
   },
 ];
 
@@ -582,6 +637,7 @@ export const istanbulHomes = [
     price: "$115 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+     location: "Istanbul",
   },
   {
     id: 56,
@@ -590,6 +646,7 @@ export const istanbulHomes = [
     price: "$98 for 2 nights",
     rating: "4.94",
     guestFavorite: true,
+      location: "Istanbul",
   },
   {
     id: 57,
@@ -598,6 +655,7 @@ export const istanbulHomes = [
     price: "$165 for 2 nights",
     rating: "4.99",
     guestFavorite: true,
+      location: "Istanbul",
   },
   {
     id: 58,
@@ -606,6 +664,7 @@ export const istanbulHomes = [
     price: "$84 for 2 nights",
     rating: "4.90",
     guestFavorite: false,
+      location: "Istanbul",
   },
   {
     id: 59,
@@ -614,6 +673,7 @@ export const istanbulHomes = [
     price: "$102 for 2 nights",
     rating: "4.96",
     guestFavorite: true,
+      location: "Istanbul",
   },
   {
     id: 60,
@@ -622,6 +682,7 @@ export const istanbulHomes = [
     price: "$109 for 2 nights",
     rating: "4.95",
     guestFavorite: true,
+      location: "Istanbul",
   },
 ];
 
@@ -636,6 +697,7 @@ export const bakuHomes = [
     price: "$92 for 2 nights",
     rating: "4.95",
     guestFavorite: true,
+      location: "Baku",
   },
   {
     id: 62,
@@ -644,6 +706,7 @@ export const bakuHomes = [
     price: "$78 for 2 nights",
     rating: "4.91",
     guestFavorite: false,
+       location: "Baku",
   },
   {
     id: 63,
@@ -652,6 +715,7 @@ export const bakuHomes = [
     price: "$135 for 2 nights",
     rating: "4.99",
     guestFavorite: true,
+       location: "Baku",
   },
   {
     id: 64,
@@ -660,6 +724,7 @@ export const bakuHomes = [
     price: "$88 for 2 nights",
     rating: "4.93",
     guestFavorite: true,
+       location: "Baku",
   },
   {
     id: 65,
@@ -668,6 +733,7 @@ export const bakuHomes = [
     price: "$95 for 2 nights",
     rating: "4.97",
     guestFavorite: true,
+       location: "Baku",
   },
   {
     id: 66,
@@ -676,6 +742,7 @@ export const bakuHomes = [
     price: "$148 for 2 nights",
     rating: "5.0",
     guestFavorite: true,
+       location: "Baku",
   },
 ];
 

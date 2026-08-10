@@ -19,7 +19,12 @@ import {
 
 function HomePage() {
   return (
-    <>
+   <div
+  className="
+  max-w-[1600px]
+  mx-auto
+  "
+>
      
 
       <Listings
@@ -82,7 +87,7 @@ function HomePage() {
       <Inspiration />
 
    
-    </>
+    </div>
   );
 }
 

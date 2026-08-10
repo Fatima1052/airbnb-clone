@@ -1,24 +1,50 @@
 
 import { useState, useRef, useEffect } from "react";
 import Calendar from "./Calender";
-function SearchBar() {
-  const searchRef = useRef(null);
+import WhereDropdown from "./WhereDropdown";
+import { FiSliders } from "react-icons/fi";
+import { 
+  FiSearch, 
+ 
+} from "react-icons/fi";
 
+
+
+
+function SearchBar() {
+  const [calendarTab, setCalendarTab] = useState("dates");
+  const searchRef = useRef(null);
+const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setActiveSection("");
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 768);
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+}, []);
+
   const [activeSection, setActiveSection] = useState("");
+  
+const [hoveredSection, setHoveredSection] = useState("");
+
+const [selectedDestination, setSelectedDestination] = useState("");
+
 const [startDate, setStartDate] = useState(null);
 const [endDate, setEndDate] = useState(null);
 
@@ -29,12 +55,60 @@ const [guests, setGuests] = useState({
   pets: 0,
 });
 
-const increaseGuest = (type) => {
-  setGuests((prev) => ({
-    ...prev,
-    [type]: prev[type] + 1,
-  }));
+
+const [selectedOption, setSelectedOption] = useState("Exact dates");
+
+
+// Flexible mode
+const [flexibleDuration, setFlexibleDuration] = useState("");
+const [selectedMonths, setSelectedMonths] = useState([]);
+
+
+const handleFlexibleMonth = (month) => {
+  setSelectedMonths((prev) => {
+    if (prev.includes(month)) {
+      return prev.filter((item) => item !== month);
+    }
+
+    return [...prev, month];
+  });
 };
+
+const increaseGuest = (type) => {
+  setGuests((prev) => {
+    const totalGuests =
+      prev.adults + prev.children + prev.infants;
+
+    // Pets ki maximum limit 5 hogi
+    if (type === "pets") {
+      if (prev.pets >= 5) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        pets: prev.pets + 1,
+      };
+    }
+
+    // Adults + children + infants ki maximum limit 16 hogi
+    if (totalGuests >= 16) {
+      return prev;
+    }
+
+    return {
+      ...prev,
+      [type]: prev[type] + 1,
+    };
+  });
+};
+
+
+
+
+
+
+
 
 const decreaseGuest = (type) => {
   setGuests((prev) => ({
@@ -43,138 +117,350 @@ const decreaseGuest = (type) => {
   }));
 };
 
+if (isMobile) {
+  return (
+    <div className="px-4 py-3">
+      <button
+        className="
+        flex
+        items-center
+        justify-between
+        w-full
+        h-[56px]
+        rounded-full
+        border
+        border-[#dddddd]
+        bg-white
+        px-5
+        shadow-md
+        "
+      >
+        <div className="flex items-center gap-3">
+          <FiSearch size={18} />
+
+          <div className="text-left">
+            <h4 className="text-[14px] font-semibold">
+              Where to?
+            </h4>
+
+            <p className="text-[12px] text-[#717171]">
+              Anywhere • Any week • Add guests
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center w-9 h-9 rounded-full border">
+          <FiSliders size={16} />
+        </div>
+      </button>
+    </div>
+  );
+}
 
   return (
+
+
+
     <div
-      ref={searchRef}
-      className="relative mx-auto mt-2 flex h-[58px] w-[750px] items-center rounded-full border border-[#dddddd] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-    >
+  ref={searchRef}
+  className={`
+  relative
+  mx-auto
+  
+  mt-2
+  flex
+h-[67px]
+ w-[90%]
+sm:w-[89%]
+md:max-w-[800px]
+lg:max-w-[810px]
+xl:max-w-[820px]
+  items-center
+  rounded-full
+  border
+  border-[#dddddd]
+ 
+shadow-[0_2px_8px_rgba(0,0,0,0.08)]
+ ${activeSection ? "bg-[#EBEBEB]" : "bg-white"}
+`}
+>
       <div
-        className={`flex h-full flex-1 cursor-pointer flex-col justify-center rounded-full px-[25px] transition-all
-${activeSection === "where" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
-        onClick={() => setActiveSection("where")}
+      onMouseEnter={() => setHoveredSection("where")}
+onMouseLeave={() => setHoveredSection("")}
+ onClick={() => setActiveSection("where")}
+       className={`flex h-full flex-1 min-w-0 cursor-pointer flex-col justify-center
+pt-[14px]
+pb-[14px] rounded-full px-3 sm:px-4 md:px-6 lg:px-[25px] transition-all
+${
+activeSection === "where"
+  ? "bg-white shadow-[0_2px_12px_rgba(0,0,0,0.18)] z-20"
+  : "hover:bg-[#DDDDDD]"
+}`}
+       
       >
-        <h4 className="m-0 text-[14px] font-semibold">Where</h4>
-        <p className="mt-[5px] text-[13px] text-gray-500">
-          Search destinations
+        <h4 className="m-0 text-[13px]
+font-semibold
+leading-none font-semibold">Where</h4>
+        <p className="mt-[5px] mt-[4px]
+text-[15px]
+font-normal
+text-[#6A6A6A]
+leading-none text-gray-500">
+        {selectedDestination || "Search destinations"}
         </p>
       </div>
 
-      <div className="h-[35px] w-px bg-[#dddddd]" />
+     <div
+  className={`h-[35px] w-px transition-all duration-200 ${
+    hoveredSection === "where" ||
+    activeSection === "where" ||
+    hoveredSection === "when" ||
+    activeSection === "when"
+      ? "bg-transparent"
+      : "bg-[#dddddd]"
+  }`}
+/>
 
       <div
-        className={`flex h-full flex-1 cursor-pointer flex-col justify-center rounded-full px-[25px] transition-all
-${activeSection === "when" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
-        onClick={() => setActiveSection("when")}
+      onMouseEnter={() => setHoveredSection("when")}
+onMouseLeave={() => setHoveredSection("")}
+ onClick={() => setActiveSection("when")}
+       className={`flex h-full flex-1 min-w-0 cursor-pointer flex-col justify-center rounded-full px-3 sm:px-4 md:px-6 lg:px-[25px] transition-all
+${
+activeSection === "when"
+  ? "bg-white shadow-[0_2px_12px_rgba(0,0,0,0.18)] z-20"
+  : "hover:bg-[#DDDDDD]"
+}`}
+       
       >
-        <h4 className="m-0 text-[14px] font-semibold">When</h4>
-     <p className="mt-[5px] text-[13px] text-gray-500">
-  {startDate && endDate
-    ? `${startDate.format("DD MMM")} - ${endDate.format("DD MMM")}`
+       <h4 className="m-0 text-[13px]
+font-semibold
+leading-nonefont-semibold">When</h4>
+   
+  <p className="mt-[4px] text-[15px] font-normal leading-none text-[#6A6A6A]">
+  {calendarTab === "flexible" && flexibleDuration
+    ? `${flexibleDuration}${
+        selectedMonths.length > 0
+          ? ` · ${selectedMonths
+  .map((month) => month.split(" ")[0].slice(0, 3))
+  .join(" ")}`
+          : ""
+      }`
+    : startDate
+    ? `${startDate.format("DD MMM")}${
+        endDate ? ` – ${endDate.format("DD MMM")}` : ""
+      }${
+        selectedOption !== "Exact dates"
+          ? ` · ${selectedOption.replace("± ", "+")}`
+          : ""
+      }`
     : "Add dates"}
 </p>
       </div>
 
-      <div className="h-[35px] w-px bg-[#dddddd]" />
-
-      <div
-        className={`flex h-full flex-1 cursor-pointer flex-col justify-center rounded-full px-[25px] transition-all
-${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
-        onClick={() => setActiveSection("who")}
-      >
-        <h4 className="m-0 text-[14px] font-semibold">Who</h4>
-     <p className="mt-[5px] text-[13px] text-gray-500">
-  {guests.adults +
-    guests.children +
-    guests.infants ===
-  0
-    ? "Add guests"
-    : `${guests.adults + guests.children + guests.infants} guests`}
-
-  {guests.pets > 0 ? `, ${guests.pets} pet` : ""}
-</p>
-      </div>
-
-      <button className="mr-[10px] h-[48px] w-[48px] rounded-full border-none bg-[#ff385c] text-[18px] text-white">
-        🔍
-      </button>
-
-      {activeSection === "where" && (
-        <div className="absolute left-0 top-[75px] z-[1000] max-h-[370px] w-[370px] overflow-y-auto rounded-[30px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
-          <h4 className="mb-[18px] text-[18px] font-semibold">
-            Suggested destinations
-          </h4>
-
-          <div className="flex cursor-pointer items-center gap-4 rounded-2xl p-3 transition-all duration-200 hover:bg-[#f7f7f7]">
-            <div className="icon-box">📍</div>
-
-            <div>
-              <h5 className="m-0 text-[17px] font-semibold">Nearby</h5>
-
-              <p className="mt-1 text-[15px] text-[#717171]">
-                Find what's around you
-              </p>
-            </div>
-          </div>
-          <div className="flex cursor-pointer items-center gap-4 rounded-2xl p-3 transition-all duration-200 hover:bg-[#f7f7f7]">
-            <div className="flex h-[58px] w-[58px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-[28px]">
-              🏙️
-            </div>
-
-            <div>
-              <h5 className="m-0 text-[17px] font-semibold">
-                Islamabad, Pakistan
-              </h5>
-
-              <p className="mt-1 text-[15px] text-[#717171]">
-                For sights like Faisal Mosque
-              </p>
-            </div>
-          </div>
-
-          <div className="flex cursor-pointer items-center gap-4 rounded-2xl p-3 transition-all duration-200 hover:bg-[#f7f7f7]">
-            <div className="flex h-[58px] w-[58px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-[28px]">
-              🌆
-            </div>
-
-            <div>
-              <h5 className="m-0 text-[17px] font-semibold">
-                Lahore, Pakistan
-              </h5>
-
-              <p className="mt-1 text-[15px] text-[#717171]">Historic city</p>
-            </div>
-          </div>
-
-          <div className="flex cursor-pointer items-center gap-4 rounded-2xl p-3 transition-all duration-200 hover:bg-[#f7f7f7]">
-            <div className="flex h-[58px] w-[58px] items-center justify-center rounded-2xl bg-[#f5f5f5] text-[28px]">
-              🏔️
-            </div>
-
-            <div>
-              <h5 className="m-0 text-[17px] font-semibold">
-                Murree, Pakistan
-              </h5>
-
-              <p className="mt-1 text-[15px] text-[#717171]">Near you</p>
-            </div>
-          </div>
-        </div>
-      )}
+   <div
+  className={`
+    h-[35px]
+    w-px
+    transition-all
+    duration-200
+    ${
+      hoveredSection === "when" ||
+      activeSection === "when" ||
+      hoveredSection === "who" ||
+      activeSection === "who"
+        ? "bg-transparent"
+        : "bg-[#dddddd]"
+    }
+  `}
+/>
 
 
-{activeSection === "when" && (
-  <div className="absolute left-1/2 top-[70px] z-[9999] -translate-x-1/2 rounded-[32px] bg-white p-8 shadow-lg">
-    <Calendar
-      startDate={startDate}
-      endDate={endDate}
-      setStartDate={setStartDate}
-      setEndDate={setEndDate}
-    />
+
+
+
+
+<div
+onMouseEnter={() => setHoveredSection("who")}
+onMouseLeave={() => setHoveredSection("")}
+  className={`
+    group
+    relative
+    flex
+    h-full
+    flex-[1.2]
+    min-w-0
+    items-center
+    rounded-full
+    transition-all
+    duration-200
+    ${
+      activeSection === "who"
+        ? "bg-white shadow-[0_2px_12px_rgba(0,0,0,0.18)] z-20"
+        : "hover:bg-[#DDDDDD]"
+    }
+  `}
+>
+  {/* WHO SECTION */}
+  <div
+    onClick={() => setActiveSection("who")}
+    className="
+      flex
+      h-full
+      min-w-0
+      flex-1
+      cursor-pointer
+      flex-col
+      justify-center
+      rounded-full
+      px-6
+    "
+  >
+    <h4 className="m-0 text-[13px] font-semibold leading-none">
+      Who
+    </h4>
+
+    <p className="mt-[4px] text-[15px] font-normal leading-none text-[#6A6A6A]">
+      {guests.adults +
+        guests.children +
+        guests.infants +
+        guests.pets ===
+      0
+        ? "Add guests"
+        : `${guests.adults + guests.children + guests.infants} guests${
+            guests.pets > 0 ? `, ${guests.pets} pets` : ""
+          }`}
+    </p>
   </div>
+
+  {/* SEARCH BUTTON */}
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+    }}
+    className={`
+      mr-2
+      h-[48px]
+      shrink-0
+      flex
+      items-center
+      justify-center
+      gap-2
+      rounded-full
+     bg-[#E31C5F]
+      text-white
+      hover:bg-[#E31C5F]
+      transition-all
+      duration-300
+      overflow-hidden
+      ${
+   
+  activeSection
+    ? "w-[96px] shadow-[0_0_12px_rgba(255,56,92,0.35)]"
+    : "w-[48px]"
+
+      }
+    `}
+  >
+    <FiSearch size={22} />
+
+    {activeSection && (
+      <span className="text-[14px] font-semibold whitespace-nowrap">
+        Search
+      </span>
+    )}
+  </button>
+</div>
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+{activeSection === "where" && (
+  <WhereDropdown
+    setSelectedDestination={setSelectedDestination}
+    setActiveSection={setActiveSection}
+  />
+)}
+{activeSection === "when" && (
+  <div
+  className="
+    absolute
+    left-1/2
+    -translate-x-1/2
+    top-[82px]
+    z-[1000]
+    w-[95vw]
+sm:w-[92vw]
+md:w-[760px]
+
+h-[70vh]
+md:h-[398px]
+    rounded-[32px]
+    bg-white
+    shadow-[0_8px_28px_rgba(0,0,0,0.12)]
+    
+    calendar-scroll
+  "
+>
+   <div className="calendar-body">
+
+<Calendar
+  startDate={startDate}
+  endDate={endDate}
+  setStartDate={setStartDate}
+  setEndDate={setEndDate}
+  calendarTab={calendarTab}
+  setCalendarTab={setCalendarTab}
+
+  selectedOption={selectedOption}
+  setSelectedOption={setSelectedOption}
+
+  flexibleDuration={flexibleDuration}
+  setFlexibleDuration={setFlexibleDuration}
+
+selectedMonths={selectedMonths}
+setSelectedMonths={setSelectedMonths}
+handleFlexibleMonth={handleFlexibleMonth}
+/>
+{calendarTab === "dates" && (
+<div className="calendar-footer">
+  {[
+    "Exact dates",
+    "± 1 day",
+    "± 2 days",
+    "± 3 days",
+    "± 7 days",
+    "± 14 days",
+  ].map((item) => (
+    <button
+      key={item}
+      onClick={() => setSelectedOption(item)}
+      className={`footer-chip ${
+  selectedOption === item ? "active" : ""
+}`}
+    >
+      {item}
+    </button>
+  ))}
+</div>
 )}
 
+</div>
 
+
+
+
+  </div>
+)}
 
       {activeSection === "who" && (
        <div className="absolute right-0 top-[82px] z-[1000] w-[420px] rounded-[30px] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
@@ -195,6 +481,11 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
 <span className="text-[16px]">{guests.adults}</span>
 
 <button
+  disabled={
+    guests.adults +
+    guests.children +
+    guests.infants >= 16
+  }
   onClick={() => increaseGuest("adults")}
   className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black"
 >
@@ -212,8 +503,17 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
               <button onClick={() => decreaseGuest("children")} className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black">-</button>
 
              <span className="text-[16px]">{guests.children}</span>
-
-              <button onClick={() => increaseGuest("children")} className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black">+</button>
+<button
+  disabled={
+    guests.adults +
+    guests.children +
+    guests.infants >= 16
+  }
+  onClick={() => increaseGuest("children")}
+  className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black"
+>
+  +
+</button>
             </div>
           </div>
 
@@ -227,7 +527,18 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
              <button onClick={() => decreaseGuest("infants")} className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black">-</button>
 <span className="text-[16px]">{guests.infants}</span>
 
-              <button onClick={() => increaseGuest("infants")} className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black">+</button>
+  <button
+  disabled={
+    guests.adults +
+      guests.children +
+      guests.infants >=
+    16
+  }
+  onClick={() => increaseGuest("infants")}
+  className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black disabled:opacity-40"
+>
+  +
+</button>
             </div>
           </div>
 
@@ -242,7 +553,13 @@ ${activeSection === "who" ? "bg-[#f7f7f7]" : "hover:bg-[#f7f7f7]"}`}
 
               <span className="text-[16px]">{guests.pets}</span>
 
-              <button onClick={() => increaseGuest("pets")} className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black">+</button>
+            <button
+  disabled={guests.pets >= 5}
+  onClick={() => increaseGuest("pets")}
+  className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full border border-[#cccccc] bg-white text-[18px] transition hover:border-black disabled:opacity-40"
+>
+  +
+</button>
             </div>
           </div>
         </div>

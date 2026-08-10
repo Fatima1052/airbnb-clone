@@ -78,7 +78,7 @@ function ImageGallery({
   return (
    <div className="mt-2">
 
-  <h2 className="mb-2 text-[26px] font-semibold text-[#222222]">
+  <h2 className="mb-2 text-[22px] md:text-[26px] font-semibold text-[#222222]">
     Over 1,000 homes in Islamabad
   </h2>
 
@@ -149,8 +149,20 @@ function ImageGallery({
 )}
 
 
-  <div className="relative flex rounded-[24px] bg-white p-4 shadow-md h-[230px] w-[660px]">
-        {/* Left Image */}
+ <div
+className="
+relative
+flex
+flex-col
+md:flex-row
+w-full
+max-w-[660px]
+rounded-[24px]
+bg-white
+p-4
+shadow-md
+"
+>
         <div>
 <div className="relative">
 <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-[13px] font-semibold text-[#222222] shadow-md">
@@ -161,7 +173,14 @@ function ImageGallery({
   <img
 src={property.image}
     alt="Room"
- className="h-[198px] w-[230px] rounded-[18px] object-cover"
+className="
+w-full
+md:w-[230px]
+h-[220px]
+md:h-[198px]
+object-cover
+rounded-[18px]
+"
   />
 
 </div>
@@ -219,9 +238,19 @@ src={property.image}
 
       </div>
 {/* Image Listings */}
-<div className="mt-8 w-[660px] grid grid-cols-2 gap-x-6 gap-y-8">
+<div 
+className="
+mt-8
+grid
+grid-cols-1
+md:grid-cols-2
+gap-6
+w-full
+max-w-[660px]
+"
+>
   {filteredListings.map((item, index) => (
-    <div key={index} className="w-[310px]">
+    <div key={index} className="w-full">
 
       <img
         src={item.image}

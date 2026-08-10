@@ -7,10 +7,25 @@ function PropertyCard({ id,image, title, price, rating, guestFavorite, original,
 
    <Link to={`/property/${id}`}>
 <div
-  className="w-[185px] shrink-0 cursor-pointer"
+ className="
+w-[150px]
+sm:w-[170px]
+md:w-[185px]
+lg:w-[185px]
+shrink-0
+cursor-pointer
+"
 
 >
-<div className="relative h-[185px] w-full overflow-hidden rounded-[14px]">
+<div className="
+relative
+h-[150px]
+sm:h-[170px]
+md:h-[185px]
+overflow-hidden
+rounded-[14px]
+"
+>
 {guestFavorite && (
    <div className="absolute left-[14px] top-[14px] z-[2] rounded-[18px] bg-white px-[10px] py-[5px] text-[12px] font-semibold text-[#222222] shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
         Guest favorite
@@ -41,16 +56,20 @@ function PropertyCard({ id,image, title, price, rating, guestFavorite, original,
 
 <div className="mt-[10px]">
 
-    <h3 className="m-0 text-[15px] font-medium text-[#222222] truncate">
+    <h3 className="m-0 text-[13px]
+sm:text-[14px]
+md:text-[15px] font-medium text-[#222222] truncate">
     {title}
 </h3>
 
-<p className="my-[2px] text-[12px] text-[#6A6A6A]">
+<p className="my-[2px] text-[11px]
+sm:text-[12px] text-[#6A6A6A]">
 {location}
 </p>
     <div className="mt-[1px] flex items-center gap-[14px]">
 
-      <p className="m-0 text-[13px] font-normal text-[#6A6A6A]">
+      <p className="m-0 text-[12px]
+sm:text-[13px] font-normal text-[#6A6A6A]">
     {price}
 </p>
        <div className="-ml-[8px] flex items-center gap-[2px] text-[13px] text-[#222222]">

@@ -14,16 +14,19 @@ function Listings({ title, subtitle, listings }) {
 
 const sliderRef = useRef(null);
 
+const scrollAmount =
+window.innerWidth < 768 ? 250 : 900;
+
 const scrollLeft = () => {
   sliderRef.current.scrollBy({
-    left: -900,
+    left: -scrollAmount,
     behavior: "smooth",
   });
 };
 
 const scrollRight = () => {
   sliderRef.current.scrollBy({
-    left: 900,
+    left: scrollAmount,
     behavior: "smooth",
   });
 };
@@ -31,14 +34,25 @@ const scrollRight = () => {
 
   return (
 
-    <section className="px-[32px] pt-[24px] pb-[8px]">
+   <section
+className="
+px-4
+sm:px-6
+md:px-8
+lg:px-[32px]
+pt-6
+pb-2
+"
+>
 <div className="mb-[25px] flex items-center justify-between">
 
   <div className="flex items-center gap-3">
     <div>
 
       <div className="flex items-center gap-2">
-       <h2 className="m-0 text-[25px] font-semibold text-[#222222]">
+       <h2 className="m-0 text-[18px]
+sm:text-[22px]
+md:text-[25px] font-semibold text-[#222222]">
           {title}
         </h2>
 
@@ -48,7 +62,9 @@ const scrollRight = () => {
       </div>
 
       {subtitle && (
-       <p className="mt-[6px] text-[16px] text-[#6a6a6a]">
+       <p className="mt-[6px] text-[13px]
+sm:text-[14px]
+md:text-[16px] text-[#6a6a6a]">
           {subtitle}
         </p>
       )}
@@ -57,7 +73,7 @@ const scrollRight = () => {
 
   </div>
 
- <div className="flex gap-[10px]">
+<div className="hidden md:flex gap-[10px]">
 
    <button
   onClick={scrollLeft}
@@ -80,7 +96,14 @@ const scrollRight = () => {
 <div
   ref={sliderRef}
  
-className="flex gap-[17px] overflow-x-hidden scroll-smooth"
+className="
+flex
+gap-3
+sm:gap-4
+overflow-x-auto
+scroll-smooth
+scrollbar-hide
+"
 >
 
           {listings.map((listing) => (
