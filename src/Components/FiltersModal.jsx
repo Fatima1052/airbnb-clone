@@ -13,7 +13,7 @@ import {
 
 import { TbTemperature } from "react-icons/tb";
 function FiltersModal({ onClose }) {
-  const [selectedType, setSelectedType] = useState("Any type");
+
   const [placeType, setPlaceType] = useState("any");
 const [hoveredType, setHoveredType] = useState("");
 const [bedrooms, setBedrooms] = useState(0);

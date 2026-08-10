@@ -1,9 +1,9 @@
-import { useState } from "react";
+
 
 function PriceDropdown({ onClose }) {
 
-  const [minPrice, setMinPrice] = useState(20);
-  const [maxPrice, setMaxPrice] = useState(220);
+const minPrice = 20;
+const maxPrice = 220;
 
   return (
     <div

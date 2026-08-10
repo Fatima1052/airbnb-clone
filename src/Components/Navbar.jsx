@@ -19,7 +19,7 @@ function Navbar() {
   const location = useLocation();
 
 const [activeTab, setActiveTab] = useState("/");
-const [isScrolled, setIsScrolled] = useState(false);
+const [, setIsScrolled] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
 const menuRef = useRef(null);
 const allControls = useAnimation();
@@ -99,7 +99,13 @@ useEffect(() => {
 
   playAnimation();
 
-}, [activeTab]);
+}, [
+  activeTab,
+  allControls,
+  homeControls,
+  experienceControls,
+  serviceControls,
+]);
 
 
 
