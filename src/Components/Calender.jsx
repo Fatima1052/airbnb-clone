@@ -83,7 +83,7 @@ const previousMonths = () => {
 {calendarTab === "flexible" && (
   <div className="p-5">
 
-    <h2 className="mb-4 text-center text-[20px] font-semibold">
+    <h2 className="mb-4 text-center text-[18px] sm:text-[20px] font-semibold">
   How long would you like to stay?
 </h2>
 
@@ -94,7 +94,7 @@ const previousMonths = () => {
       setFlexibleDuration("Weekend");
       setSelectedOption("Exact dates");
     }}
-    className={`rounded-full border px-4 py-3 transition ${
+   className={`rounded-full border px-3 py-2 text-sm transition sm:px-4 sm:py-3 sm:text-base ${
       flexibleDuration === "Weekend"
         ? "border-black bg-[#f7f7f7]"
         : "border-[#dddddd] bg-white hover:border-black"
@@ -108,7 +108,7 @@ const previousMonths = () => {
       setFlexibleDuration("Week");
       setSelectedOption("Exact dates");
     }}
-    className={`rounded-full border px-4 py-3 transition ${
+  className={`rounded-full border px-3 py-2 text-sm transition sm:px-4 sm:py-3 sm:text-base ${
       flexibleDuration === "Week"
         ? "border-black bg-[#f7f7f7]"
         : "border-[#dddddd] bg-white hover:border-black"
@@ -122,7 +122,7 @@ const previousMonths = () => {
       setFlexibleDuration("Month");
       setSelectedOption("Exact dates");
     }}
-    className={`rounded-full border px-4 py-3 transition ${
+  className={`rounded-full border px-3 py-2 text-sm transition sm:px-4 sm:py-3 sm:text-base ${
       flexibleDuration === "Month"
         ? "border-black bg-[#f7f7f7]"
         : "border-[#dddddd] bg-white hover:border-black"
@@ -133,90 +133,131 @@ const previousMonths = () => {
 
 </div>
 
-    <h2 className="mb-6 text-center text-[20px] font-semibold">
-      Go anytime
-    </h2>
+   <h2 className="mb-2 text-center text-[18px] sm:text-[20px] font-semibold">
+  Go anytime
+</h2>
 
-    <div className="relative mt-5">
 
+
+<div className="relative mt-5 px-3">
+
+  {/* MONTH CARDS */}
   <div className="flex gap-4 overflow-hidden">
 
     {months
       .slice(startIndex, startIndex + 6)
       .map((item, index) => (
         <div
-  key={index}
- onClick={() => {
-  handleFlexibleMonth(`${item.month} ${item.year}`);
-}}
-         className={`
-w-[294px]
-h-[122px]
-rounded-[20px]
-border
-border-[#DDDDDD]
-bg-white
-flex
-flex-col
-items-center
-justify-center
-transition-all
-  duration-200
-    ${
-     selectedMonths.includes(`${item.month} ${item.year}`)
-        ? "border-black shadow-sm"
-        : "border-[#DDDDDD] hover:border-black hover:shadow-sm"
-    }
-  `}
-
+          key={index}
+          onClick={() => {
+            handleFlexibleMonth(`${item.month} ${item.year}`);
+          }}
+          className={`
+            w-[112px]
+            h-[122px]
+            shrink-0
+            rounded-[20px]
+            border
+            bg-white
+            flex
+            flex-col
+            items-center
+            justify-center
+            cursor-pointer
+            transition-all
+            duration-200
+            ${
+              selectedMonths.includes(
+                `${item.month} ${item.year}`
+              )
+                ? "border-black shadow-sm"
+                : "border-[#DDDDDD] hover:border-black hover:shadow-sm"
+            }
+          `}
         >
-       <FiCalendar className="text-[31px] text-[#717171]" />
-<h3 className="mt-5 text-[16px] font-medium">
-  {item.month}
-</h3>
 
-<p className="text-[14px] text-[#717171]">
-  {item.year}
-</p>
+          <FiCalendar className="text-[31px] text-[#717171]" />
+
+          <h3 className="mt-5 text-[16px] font-medium">
+            {item.month}
+          </h3>
+
+          <p className="text-[14px] text-[#717171]">
+            {item.year}
+          </p>
+
         </div>
       ))}
   </div>
-<button
-  onClick={previousMonths}
-  className="
-  absolute
-  left-[-6]
-  top-1/2
-  -translate-y-1/2
-  w-[26px]
-  h-[26px]
-  rounded-full
-  border
-  bg-white
-  shadow-md
-  "
->
-  <FiChevronLeft />
-</button>
-  <button
-    onClick={nextMonths}
-    className="
-    absolute
-    right-0
-    top-1/2
-    -translate-y-1/2
-    w-[26px]
-    h-[26px]
-    rounded-full
-    border
-    bg-white
-    shadow-md
-    "
-  >
-    <FiChevronRight />
-  </button>
+
+
+  {/* LEFT BUTTON */}
+  {startIndex > 0 && (
+    <button
+      onClick={previousMonths}
+      className="
+        absolute
+        left-[-2px]
+        top-1/2
+        -translate-y-1/2
+        z-10
+        flex
+        h-[32px]
+        w-[32px]
+        items-center
+        justify-center
+        rounded-full
+        border
+        border-[#DDDDDD]
+        bg-white
+        shadow-[0_2px_8px_rgba(0,0,0,0.15)]
+        hover:shadow-[0_3px_10px_rgba(0,0,0,0.20)]
+        transition
+      "
+    >
+      <FiChevronLeft className="text-[18px] text-[#222222]" />
+    </button>
+  )}
+
+
+  {/* RIGHT BUTTON */}
+  {startIndex < months.length - 6 && (
+    <button
+      onClick={nextMonths}
+      className="
+        absolute
+        right-[-2px]
+        top-1/2
+        -translate-y-1/2
+        z-10
+        flex
+        h-[32px]
+        w-[32px]
+        items-center
+        justify-center
+        rounded-full
+        border
+        border-[#DDDDDD]
+        bg-white
+        shadow-[0_2px_8px_rgba(0,0,0,0.15)]
+        hover:shadow-[0_3px_10px_rgba(0,0,0,0.20)]
+        transition
+      "
+    >
+      <FiChevronRight className="text-[18px] text-[#222222]" />
+    </button>
+  )}
 
 </div>
+
+
+
+
+
+
+
+
+
 
     
 

@@ -6,29 +6,61 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 
 
 function Listings({ title, subtitle, listings }) {
 
 const sliderRef = useRef(null);
+const [isAtStart, setIsAtStart] = useState(true);
+const [isAtEnd, setIsAtEnd] = useState(false);
+const checkScrollPosition = () => {
+  if (!sliderRef.current) return;
 
-const scrollAmount =
-window.innerWidth < 768 ? 250 : 900;
+  const {
+    scrollLeft,
+    scrollWidth,
+    clientWidth,
+  } = sliderRef.current;
+
+  setIsAtStart(scrollLeft <= 0);
+
+  setIsAtEnd(
+    scrollLeft + clientWidth >= scrollWidth - 5
+  );
+};
+
+useEffect(() => {
+  const slider = sliderRef.current;
+
+  if (!slider) return;
+
+  slider.addEventListener("scroll", checkScrollPosition);
+
+  return () => {
+    slider.removeEventListener("scroll", checkScrollPosition);
+  };
+}, [listings]);
+
+
 
 const scrollLeft = () => {
-  sliderRef.current.scrollBy({
-    left: -scrollAmount,
-    behavior: "smooth",
-  });
+  if (sliderRef.current) {
+    sliderRef.current.scrollBy({
+      left: -sliderRef.current.clientWidth * 0.8,
+      behavior: "smooth",
+    });
+  }
 };
 
 const scrollRight = () => {
-  sliderRef.current.scrollBy({
-    left: scrollAmount,
-    behavior: "smooth",
-  });
+  if (sliderRef.current) {
+    sliderRef.current.scrollBy({
+      left: sliderRef.current.clientWidth * 0.8,
+      behavior: "smooth",
+    });
+  }
 };
 
 
@@ -77,17 +109,43 @@ md:text-[16px] text-[#6a6a6a]">
 
    <button
   onClick={scrollLeft}
-  className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#f2f2f2] transition hover:bg-[#e5e5e5]"
+  disabled={isAtStart}
+  className={`
+    flex h-[33px] w-[33px] items-center justify-center rounded-full
+    transition
+    ${
+      isAtStart
+        ? "cursor-not-allowed bg-[#f7f7f7] text-[#b0b0b0]"
+        : "cursor-pointer bg-[#f2f2f2] text-[#222222] hover:bg-[#e5e5e5]"
+    }
+  `}
 >
-      <FiChevronLeft />
-    </button>
+  <FiChevronLeft />
+</button>
 
-   <button
+   
+
+  <button
   onClick={scrollRight}
-  className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-[#f2f2f2] transition hover:bg-[#e5e5e5]"
+  className="
+    flex
+    h-[33px]
+    w-[33px]
+    items-center
+    justify-center
+    rounded-full
+    bg-[#f2f2f2]
+    text-[#222222]
+    cursor-pointer
+    transition
+    hover:bg-[#e5e5e5]
+  "
 >
-      <FiChevronRight />
-    </button>
+  <FiChevronRight />
+</button>
+
+
+
 
   </div>
 
@@ -95,15 +153,14 @@ md:text-[16px] text-[#6a6a6a]">
    
 <div
   ref={sliderRef}
- 
-className="
-flex
-gap-3
-sm:gap-4
-overflow-x-auto
-scroll-smooth
-scrollbar-hide
-"
+  className="
+    w-full
+    flex
+    gap-4
+    overflow-x-auto
+    scroll-smooth
+    scrollbar-hide
+  "
 >
 
           {listings.map((listing) => (

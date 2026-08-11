@@ -1,27 +1,29 @@
 
 import { Link } from "react-router-dom";
 function PropertyCard({ id,image, title, price, rating, guestFavorite, original, location }){
-   
-  
-    return(
 
-   <Link to={`/property/${id}`}>
-<div
- className="
-w-[150px]
-sm:w-[170px]
-md:w-[185px]
-lg:w-[185px]
-shrink-0
-cursor-pointer
-"
+  return(
 
+ <Link
+  to={`/property/${id}`}
+  className="
+    block
+    shrink-0
+    snap-start
+    cursor-pointer
+
+    w-[calc((100%-16px)/1.5)]
+    sm:w-[calc((100%-32px)/2.5)]
+    md:w-[calc((100%-48px)/4)]
+    lg:w-[calc((100%-64px)/5)]
+    xl:w-[calc((100%-80px)/6)]
+  "
 >
+ <div className="w-full">
+
 <div className="
 relative
-h-[150px]
-sm:h-[170px]
-md:h-[185px]
+aspect-square
 overflow-hidden
 rounded-[14px]
 "
@@ -31,13 +33,11 @@ rounded-[14px]
         Guest favorite
     </div>
 )}
-
 {original && (
    <div className="absolute left-[14px] top-[14px] z-[2] rounded-[18px] bg-white px-[10px] py-[5px] text-[12px] font-semibold text-[#222222] shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
         Original
     </div>
 )}
-
 <img
   src={image}
   alt="property"
@@ -49,14 +49,8 @@ rounded-[14px]
                 </button>
 
             </div>
-
-
-
-
-
 <div className="mt-[10px]">
-
-    <h3 className="m-0 text-[13px]
+  <h3 className="m-0 text-[13px]
 sm:text-[14px]
 md:text-[15px] font-medium text-[#222222] truncate">
     {title}
@@ -81,12 +75,6 @@ sm:text-[13px] font-normal text-[#6A6A6A]">
     </div>
 
 </div>
-
-
-
-
-
-
         </div>
 
 </Link>

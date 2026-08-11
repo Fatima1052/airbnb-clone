@@ -11,7 +11,7 @@ function Header() {
   return (
     <>
      {!isDetailPage && (
-  <div className="w-full bg-[#fafafa] pb-[35px] border-b-2 border-[#ebebeb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+  <div className="w-full bg-[#fafafa] pb-[20px] sm:pb-[25px] md:pb-[30px] lg:pb-[35px] border-b-2 border-[#ebebeb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
     <Navbar />
     <SearchBar />
   </div>

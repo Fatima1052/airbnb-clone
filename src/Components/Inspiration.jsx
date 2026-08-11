@@ -19,11 +19,10 @@ md:text-[22px] font-semibold text-[#222222]">
   Inspiration for future getaways
 </h2>
 
-    <div className="
+  <div className="
 mt-6
 flex
-gap-5
-md:gap-7
+gap-7
 overflow-x-auto
 whitespace-nowrap
 border-b
@@ -45,7 +44,7 @@ scrollbar-hide
         <span className="whitespace-nowrap cursor-pointer text-[15px] text-[#6A6A6A]">Airbnb-friendly apartments</span>
       </div>
 
-      <div className="
+  <div className="
 mt-8
 grid
 grid-cols-2

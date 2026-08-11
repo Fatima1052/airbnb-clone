@@ -1,7 +1,7 @@
 
 import logo from "../assests/airbnblogo.png";
 import all from  "../assests/all.jfif";
-import home from "../assests/homedetailpageicon.avif";
+import home from "../assests/home.png";
 import experience from "../assests/experiences.jpg";
 import service from "../assests/services.jfif";
 
@@ -137,8 +137,10 @@ z-50
 flex
 items-center
 justify-between
-h-[88px]
-px-2
+h-[72px]
+sm:h-[80px]
+md:h-[88px]
+px-3
 sm:px-4
 md:px-6
 lg:px-8
@@ -186,22 +188,25 @@ font-black
 
   {/* Center */}
 <div
-className="
-hidden
-md:flex
-items-center
-gap-2
-sm:gap-4
-md:gap-5
-lg:gap-[30px]
-lg:ml-20
-"
+  className="
+    hidden
+    md:flex
+    items-center
+    gap-2
+    sm:gap-4
+    md:gap-5
+    lg:gap-[25px]
+    xl:gap-[30px]
+    absolute
+    left-[49%]
+    -translate-x-1/2
+  "
 >
 
 <NavLink
   to="/"
   end
- className="
+  className="
 relative
 flex
 items-center
@@ -210,6 +215,7 @@ sm:gap-[6px]
 lg:gap-[7px]
 no-underline
 text-black
+
 "
 >
   <motion.img
@@ -270,7 +276,7 @@ lg:text-[14px] leading-[20px] ${
     stiffness: 500,
     damping: 35,
   }}
-  className="absolute -bottom-2 h-[2px] w-full rounded-full bg-black"
+   className="absolute -bottom-3 h-[4px] w-full rounded-full bg-black"
 />
   )}
 </NavLink>
@@ -284,20 +290,20 @@ lg:text-[14px] leading-[20px] ${
 relative
 flex
 items-center
-gap-[1px]
+gap-[6px]
 no-underline
 text-black
 "
 >
 
-  <div className="w-[63px] h-[63px] flex items-center justify-center">
+  <div className="w-[42px] h-[42px] flex items-center justify-center">
   <motion.img
     src={home}
     alt="Homes"
     whileHover={{
   scale: 1.15,
 }}
- className="w-[63px] h-[63px] object-cover"
+className="w-[42px] h-[42px] object-contain"
   animate={homeControls}
     transition={{
       duration: 0.25,
@@ -323,7 +329,7 @@ lg:text-[14px] leading-[20px] ${
   {activeTab === "/homes" && (
     <motion.div
       layoutId="activeLine"
-       className="absolute -bottom-2 h-[2px] w-full rounded-full bg-black"
+       className="absolute -bottom-2 h-[3px] w-full rounded-full bg-black"
     />
   )}
 </NavLink>
@@ -378,7 +384,7 @@ lg:text-[14px] leading-none ${
   {activeTab === "/experiences" && (
     <motion.div
       layoutId="activeLine"
-      className="absolute -bottom-2 h-[2px] w-full rounded-full bg-black"
+      className="absolute -bottom-2 h-[3px] w-full rounded-full bg-black"
     />
   )}
 </NavLink>
@@ -436,7 +442,7 @@ lg:text-[14px] leading-none ${
   {activeTab === "/services" && (
     <motion.div
       layoutId="activeLine"
-      className="absolute -bottom-2 h-[2px] w-full rounded-full bg-black"
+      className="absolute -bottom-2 h-[4px] w-full rounded-full bg-black"
     />
   )}
 </NavLink>
@@ -444,13 +450,15 @@ lg:text-[14px] leading-none ${
   </div>
 
   {/* Right */}
- <div
+<div
 className="
 flex
 items-center
-gap-2
-sm:gap-3
-lg:gap-[15px]
+gap-1
+sm:gap-2
+md:gap-3
+lg:gap-3
+xl:gap-[15px]
 "
 >
 
@@ -489,13 +497,16 @@ lg:gap-[15px]
   <button
     className="
       flex
-      h-[38px]
-      w-[38px]
+      h-[34px]
+w-[34px]
+sm:h-[38px]
+sm:w-[38px]
       items-center
       justify-center
       rounded-full
      bg-[#eeeeee]
-      text-[20px]
+    text-[18px]
+sm:text-[20px]
       transition
      hover:bg-[#e5e5e5]
     "
@@ -508,14 +519,17 @@ lg:gap-[15px]
 
   <button
     onClick={() => setIsMenuOpen((prev) => !prev)}
-    className={`
+className={`
       flex
-      h-[38px]
-      w-[38px]
+      h-[34px]
+      w-[34px]
+      sm:h-[38px]
+      sm:w-[38px]
       items-center
       justify-center
       rounded-full
-      text-[20px]
+      text-[18px]
+      sm:text-[20px]
       transition
       duration-200
       ${
@@ -538,7 +552,8 @@ lg:gap-[15px]
         right-0
         top-[60px]
         z-[1000]
-        w-[285px]
+       w-[calc(100vw-24px)]
+sm:w-[285px]
       
         rounded-[18px]
         bg-white

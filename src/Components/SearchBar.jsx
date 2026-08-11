@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Calendar from "./Calender";
 import WhereDropdown from "./WhereDropdown";
 import { FiSliders } from "react-icons/fi";
@@ -12,6 +13,7 @@ import {
 
 
 function SearchBar() {
+   const location = useLocation();
   const [calendarTab, setCalendarTab] = useState("dates");
   const searchRef = useRef(null);
 const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -143,9 +145,11 @@ if (isMobile) {
               Where to?
             </h4>
 
-            <p className="text-[12px] text-[#717171]">
-              Anywhere • Any week • Add guests
-            </p>
+          <p className="text-[12px] text-[#717171]">
+  {location.pathname === "/experiences"
+    ? "Search by city or landmark"
+    : "Anywhere • Any week • Add guests"}
+</p>
           </div>
         </div>
 
@@ -170,11 +174,12 @@ if (isMobile) {
   mt-2
   flex
 h-[67px]
- w-[90%]
-sm:w-[89%]
-md:max-w-[800px]
-lg:max-w-[810px]
-xl:max-w-[820px]
+w-[94%]
+sm:w-[92%]
+md:w-[90%]
+lg:w-[82%]
+xl:w-[66%]
+2xl:w-[70%]
   items-center
   rounded-full
   border
@@ -198,15 +203,22 @@ activeSection === "where"
 }`}
        
       >
-        <h4 className="m-0 text-[13px]
+       <h4 className="m-0 text-[12px] sm:text-[13px]
 font-semibold
-leading-none font-semibold">Where</h4>
-        <p className="mt-[5px] mt-[4px]
-text-[15px]
+leading-none font-semibold">
+  Where
+</h4>
+       <p className="mt-[4px]
+text-[13px]
+sm:text-[14px]
+md:text-[15px]
 font-normal
 text-[#6A6A6A]
-leading-none text-gray-500">
-        {selectedDestination || "Search destinations"}
+leading-none">
+       {selectedDestination ||
+  (location.pathname === "/experiences"
+    ? "Search by city or landmark"
+    : "Search destinations")}
         </p>
       </div>
 
@@ -233,11 +245,13 @@ activeSection === "when"
 }`}
        
       >
-       <h4 className="m-0 text-[13px]
+       <h4 className="m-0 text-[12px] sm:text-[13px]
 font-semibold
-leading-nonefont-semibold">When</h4>
+leading-none">
+  When
+</h4>
    
-  <p className="mt-[4px] text-[15px] font-normal leading-none text-[#6A6A6A]">
+ <p className="mt-[4px] text-[13px] sm:text-[14px] md:text-[15px] font-normal leading-none text-[#6A6A6A]">
   {calendarTab === "flexible" && flexibleDuration
     ? `${flexibleDuration}${
         selectedMonths.length > 0
@@ -313,14 +327,16 @@ onMouseLeave={() => setHoveredSection("")}
       flex-col
       justify-center
       rounded-full
-      px-6
+   px-3
+sm:px-4
+md:px-5
+lg:px-6
     "
   >
-    <h4 className="m-0 text-[13px] font-semibold leading-none">
-      Who
-    </h4>
-
-    <p className="mt-[4px] text-[15px] font-normal leading-none text-[#6A6A6A]">
+   <h4 className="m-0 text-[12px] sm:text-[13px] font-semibold leading-none">
+  Who
+</h4>
+<p className="mt-[4px] text-[13px] sm:text-[14px] md:text-[15px] font-normal leading-none text-[#6A6A6A]">
       {guests.adults +
         guests.children +
         guests.infants +
@@ -339,8 +355,10 @@ onMouseLeave={() => setHoveredSection("")}
       e.stopPropagation();
     }}
     className={`
-      mr-2
-      h-[48px]
+    mr-1
+sm:mr-2
+h-[44px]
+sm:h-[48px]
       shrink-0
       flex
       items-center
@@ -391,24 +409,24 @@ onMouseLeave={() => setHoveredSection("")}
   />
 )}
 {activeSection === "when" && (
-  <div
+<div
   className="
     absolute
     left-1/2
     -translate-x-1/2
     top-[82px]
     z-[1000]
-    w-[95vw]
-sm:w-[92vw]
-md:w-[760px]
 
-h-[70vh]
-md:h-[398px]
+    w-[760px]
+    max-w-[calc(100vw-24px)]
+
+    h-[398px]
+
+    overflow-hidden
+
     rounded-[32px]
     bg-white
     shadow-[0_8px_28px_rgba(0,0,0,0.12)]
-    
-    calendar-scroll
   "
 >
    <div className="calendar-body">
@@ -463,7 +481,9 @@ handleFlexibleMonth={handleFlexibleMonth}
 )}
 
       {activeSection === "who" && (
-       <div className="absolute right-0 top-[82px] z-[1000] w-[420px] rounded-[30px] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
+       <div className="absolute right-0 top-[82px] z-[1000] w-[90vw]
+sm:w-[380px]
+md:w-[420px] rounded-[30px] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
           <div className="flex items-center justify-between border-b border-[#eeeeee] py-[18px] last:border-b-0">
             <div>
               <h4 className="m-0 text-[16px] font-semibold">Adults</h4>
