@@ -12,23 +12,22 @@ import { useRef, useState, useEffect } from "react";
 
 function Listings({ title, subtitle, listings }) {
 
+
+
+
+
+
 const sliderRef = useRef(null);
 const [isAtStart, setIsAtStart] = useState(true);
-const [isAtEnd, setIsAtEnd] = useState(false);
+
 const checkScrollPosition = () => {
   if (!sliderRef.current) return;
 
-  const {
-    scrollLeft,
-    scrollWidth,
-    clientWidth,
-  } = sliderRef.current;
+  const { scrollLeft } = sliderRef.current;
 
   setIsAtStart(scrollLeft <= 0);
 
-  setIsAtEnd(
-    scrollLeft + clientWidth >= scrollWidth - 5
-  );
+  
 };
 
 useEffect(() => {
@@ -37,9 +36,11 @@ useEffect(() => {
   if (!slider) return;
 
   slider.addEventListener("scroll", checkScrollPosition);
+  window.addEventListener("resize", checkScrollPosition);
 
   return () => {
     slider.removeEventListener("scroll", checkScrollPosition);
+    window.removeEventListener("resize", checkScrollPosition);
   };
 }, [listings]);
 
