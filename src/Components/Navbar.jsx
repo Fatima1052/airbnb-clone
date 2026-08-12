@@ -232,6 +232,7 @@ sm:h-[32px]
 lg:w-[36px]
 lg:h-[36px]
 object-contain
+mix-blend-multiply
 "
  animate={allControls}
   transition={{
@@ -329,7 +330,7 @@ lg:text-[14px] leading-[20px] ${
   {activeTab === "/homes" && (
     <motion.div
       layoutId="activeLine"
-       className="absolute -bottom-2 h-[3px] w-full rounded-full bg-black"
+       className="absolute -bottom-2 h-[4px] w-full rounded-full bg-black"
     />
   )}
 </NavLink>
@@ -384,7 +385,7 @@ lg:text-[14px] leading-none ${
   {activeTab === "/experiences" && (
     <motion.div
       layoutId="activeLine"
-      className="absolute -bottom-2 h-[3px] w-full rounded-full bg-black"
+      className="absolute -bottom-2 h-[4px] w-full rounded-full bg-black"
     />
   )}
 </NavLink>

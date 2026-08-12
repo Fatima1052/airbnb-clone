@@ -52,14 +52,11 @@ rounded-[14px]
 <div className="mt-[10px]">
   <h3 className="m-0 text-[13px]
 sm:text-[14px]
-md:text-[15px] font-medium text-[#222222] truncate">
+md:text-[15px] font-semibold text-[#222222]">
     {title}
 </h3>
 
-<p className="my-[2px] text-[11px]
-sm:text-[12px] text-[#6A6A6A]">
-{location}
-</p>
+
     <div className="mt-[1px] flex items-center gap-[14px]">
 
       <p className="m-0 text-[12px]
@@ -67,10 +64,9 @@ sm:text-[13px] font-normal text-[#6A6A6A]">
     {price}
 </p>
        <div className="-ml-[8px] flex items-center gap-[2px] text-[13px] text-[#222222]">
-
-            <span>{rating}</span>
-
-        </div>
+  <span>★</span>
+  <span>{rating}</span>
+</div>
 
     </div>
 

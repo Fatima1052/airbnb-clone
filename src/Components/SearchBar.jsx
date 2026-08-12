@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Calendar from "./Calender";
 import WhereDropdown from "./WhereDropdown";
+import ExperienceCalendar from "./ExperienceCalendar";
 import { FiSliders } from "react-icons/fi";
 import { 
   FiSearch, 
@@ -333,19 +334,25 @@ md:px-5
 lg:px-6
     "
   >
-   <h4 className="m-0 text-[12px] sm:text-[13px] font-semibold leading-none">
-  Who
+  
+<h4 className="m-0 text-[12px] sm:text-[13px] font-semibold leading-none">
+  {location.pathname === "/services" ? "Type of service" : "Who"}
 </h4>
+
+
+
 <p className="mt-[4px] text-[13px] sm:text-[14px] md:text-[15px] font-normal leading-none text-[#6A6A6A]">
-      {guests.adults +
-        guests.children +
-        guests.infants +
-        guests.pets ===
-      0
-        ? "Add guests"
-        : `${guests.adults + guests.children + guests.infants} guests${
-            guests.pets > 0 ? `, ${guests.pets} pets` : ""
-          }`}
+     {location.pathname === "/services"
+  ? "Add service"
+  : guests.adults +
+      guests.children +
+      guests.infants +
+      guests.pets ===
+    0
+  ? "Add guests"
+  : `${guests.adults + guests.children + guests.infants} guests${
+      guests.pets > 0 ? `, ${guests.pets} pets` : ""
+    }`}
     </p>
   </div>
 
@@ -408,48 +415,78 @@ sm:h-[48px]
     setActiveSection={setActiveSection}
   />
 )}
+
+
+
+
 {activeSection === "when" && (
 <div
-  className="
-    absolute
-    left-1/2
-    -translate-x-1/2
-    top-[82px]
-    z-[1000]
+  className={`
+  absolute
+  left-1/2
+  -translate-x-1/2
+  top-[82px]
+  z-[1000]
 
-    w-[760px]
-    max-w-[calc(100vw-24px)]
+  max-w-[calc(100vw-24px)]
 
-    h-[398px]
 
-    overflow-hidden
 
-    rounded-[32px]
-    bg-white
-    shadow-[0_8px_28px_rgba(0,0,0,0.12)]
-  "
+
+  
+
+
+  rounded-[32px]
+  bg-white
+  shadow-[0_8px_28px_rgba(0,0,0,0.12)]
+
+  ${
+    location.pathname === "/experiences" ||
+    location.pathname === "/services"
+     ? "w-[660px] h-[397px] overflow-y-auto overflow-x-hidden"
+      : "w-[660px] h-[397px] overflow-hidden"
+  }
+`}
 >
-   <div className="calendar-body">
+   
+  <div
+  className={
+    location.pathname === "/experiences" ||
+    location.pathname === "/services"
+      ? "w-full"
+      : "calendar-body"
+  }
+>
 
-<Calendar
-  startDate={startDate}
-  endDate={endDate}
-  setStartDate={setStartDate}
-  setEndDate={setEndDate}
-  calendarTab={calendarTab}
-  setCalendarTab={setCalendarTab}
+{location.pathname === "/experiences" ||
+location.pathname === "/services" ? (
+  <ExperienceCalendar
+    onDateSelect={(date) => {
+      setStartDate(date);
+      setActiveSection("when");
+    }}
+  />
+) : (
+  <Calendar
+    startDate={startDate}
+    endDate={endDate}
+    setStartDate={setStartDate}
+    setEndDate={setEndDate}
+    calendarTab={calendarTab}
+    setCalendarTab={setCalendarTab}
+    selectedOption={selectedOption}
+    setSelectedOption={setSelectedOption}
+    flexibleDuration={flexibleDuration}
+    setFlexibleDuration={setFlexibleDuration}
+    selectedMonths={selectedMonths}
+    setSelectedMonths={setSelectedMonths}
+    handleFlexibleMonth={handleFlexibleMonth}
+  />
+)}
 
-  selectedOption={selectedOption}
-  setSelectedOption={setSelectedOption}
-
-  flexibleDuration={flexibleDuration}
-  setFlexibleDuration={setFlexibleDuration}
-
-selectedMonths={selectedMonths}
-setSelectedMonths={setSelectedMonths}
-handleFlexibleMonth={handleFlexibleMonth}
-/>
-{calendarTab === "dates" && (
+{location.pathname !== "/experiences" &&
+ location.pathname !== "/services" &&
+ calendarTab === "dates" && (
 <div className="calendar-footer">
   {[
     "Exact dates",
@@ -562,6 +599,10 @@ md:w-[420px] rounded-[30px] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
             </div>
           </div>
 
+
+
+
+{location.pathname !== "/experiences" && (
           <div className="flex items-center justify-between border-b border-[#eeeeee] py-[18px] last:border-b-0">
             <div>
               <h4 className="m-0 text-[16px] font-semibold">Pets</h4>
@@ -582,6 +623,7 @@ md:w-[420px] rounded-[30px] bg-white p-5 shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
 </button>
             </div>
           </div>
+)}
         </div>
       )}
     </div>
