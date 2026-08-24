@@ -1,4 +1,4 @@
-
+import AuthModal from "./AuthModal";
 import logo from "../assests/airbnblogo.png";
 import all from  "../assests/all.jfif";
 import home from "../assests/home.png";
@@ -21,6 +21,7 @@ function Navbar() {
 const [activeTab, setActiveTab] = useState("/");
 const [, setIsScrolled] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
+const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 const menuRef = useRef(null);
 const allControls = useAnimation();
 const homeControls = useAnimation();
@@ -475,22 +476,23 @@ xl:gap-[15px]
 
   {/* Become a host */}
 
-  <button
-    className="
-      hidden
-      lg:block
-      rounded-full
-      px-2
-      py-4
-      text-[15px]
-      font-semibold
-      text-[#222222]
-      transition
-      hover:bg-[#f5f5f5]
-    "
-  >
-    Become a host
-  </button>
+ <button
+  onClick={() => setIsAuthModalOpen(true)}
+  className="
+    hidden
+    lg:block
+    rounded-full
+    px-2
+    py-4
+    text-[15px]
+    font-semibold
+    text-[#222222]
+    transition
+    hover:bg-[#f5f5f5]
+  "
+>
+  Become a host
+</button>
 
 
   {/* Globe */}
@@ -566,6 +568,8 @@ sm:w-[285px]
       {/* Help Center */}
 
       <button
+
+   
         className="
           flex
           w-full
@@ -666,19 +670,23 @@ sm:w-[285px]
 
       {/* Login */}
 
-      <button
-        className="
-          w-full
-          px-5
-          py-3
-          text-left
-          text-[16px]
-          text-[#222222]
-          hover:bg-[#f7f7f7]
-        "
-      >
-        Log in or sign up
-      </button>
+    <button
+  onClick={() => {
+    setIsAuthModalOpen(true);
+    setIsMenuOpen(false);
+  }}
+  className="
+    w-full
+    px-5
+    py-3
+    text-left
+    text-[16px]
+    text-[#222222]
+    hover:bg-[#f7f7f7]
+  "
+>
+  Log in or sign up
+</button>
 
     </div>
   )}
@@ -690,7 +698,11 @@ sm:w-[285px]
 
 
   </div>
-
+{isAuthModalOpen && (
+  <AuthModal
+    onClose={() => setIsAuthModalOpen(false)}
+  />
+)}
 </header>
   );
 }

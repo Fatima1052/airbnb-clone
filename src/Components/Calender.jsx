@@ -38,7 +38,7 @@ const [startIndex, setStartIndex] = useState(0);
 
 
 const nextMonths = () => {
-  if (startIndex < months.length - 6) {
+  if (startIndex < months.length - 5) {
     setStartIndex(startIndex + 1);
   }
 };
@@ -70,14 +70,16 @@ const previousMonths = () => {
 </button>
 </div>
     {calendarTab === "dates" && (
-  <DateRangeCalendar
-    disablePast
-    value={[startDate, endDate]}
-    onChange={(newValue) => {
-      setStartDate(newValue[0]);
-      setEndDate(newValue[1]);
-    }}
-  />
+  <div className="overflow-x-hidden">
+    <DateRangeCalendar
+      disablePast
+      value={[startDate, endDate]}
+      onChange={(newValue) => {
+        setStartDate(newValue[0]);
+        setEndDate(newValue[1]);
+      }}
+    />
+  </div>
 )}
 
 {calendarTab === "flexible" && (
@@ -145,17 +147,17 @@ const previousMonths = () => {
   <div className="flex gap-4 overflow-hidden">
 
     {months
-      .slice(startIndex, startIndex + 6)
-      .map((item, index) => (
+  .slice(startIndex, startIndex + 5)
+  .map((item, index) => (
         <div
           key={index}
           onClick={() => {
             handleFlexibleMonth(`${item.month} ${item.year}`);
           }}
           className={`
-            w-[112px]
-            h-[122px]
-            shrink-0
+          w-[calc((100%-64px)/5)]
+h-[122px]
+shrink-0
             rounded-[20px]
             border
             bg-white

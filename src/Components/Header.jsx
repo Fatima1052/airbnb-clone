@@ -7,10 +7,10 @@ function Header() {
   const location = useLocation();
 
   const isDetailPage = location.pathname.includes("/property");
-
+const isSearchPage = location.pathname === "/search";
   return (
     <>
-     {!isDetailPage && (
+   {!isDetailPage && !isSearchPage && (
   <div className="w-full bg-[#fafafa] pb-[20px] sm:pb-[25px] md:pb-[30px] lg:pb-[35px] border-b-2 border-[#ebebeb] shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
     <Navbar />
     <SearchBar />

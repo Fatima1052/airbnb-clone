@@ -1,6 +1,12 @@
-
+import {
+  setLocation,
+  setStartDate,
+  setEndDate,
+} from "../redux/searchSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import Calendar from "./Calender";
 import WhereDropdown from "./WhereDropdown";
 import ExperienceCalendar from "./ExperienceCalendar";
@@ -15,7 +21,26 @@ import {
 
 function SearchBar() {
    const location = useLocation();
+const navigate = useNavigate();
+
+const dispatch = useDispatch();
+
+const guests = useSelector((state) => state.search);
+const selectedDestination = useSelector(
+  (state) => state.search.location
+);
+
+
+const startDate = useSelector(
+  (state) => state.search.startDate
+);
+
+const endDate = useSelector(
+  (state) => state.search.endDate
+);
+
   const [calendarTab, setCalendarTab] = useState("dates");
+const [selectedOption, setSelectedOption] = useState("Exact dates");
   const searchRef = useRef(null);
 const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
@@ -46,20 +71,14 @@ const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
 const [hoveredSection, setHoveredSection] = useState("");
 
-const [selectedDestination, setSelectedDestination] = useState("");
-
-const [startDate, setStartDate] = useState(null);
-const [endDate, setEndDate] = useState(null);
-
-const [guests, setGuests] = useState({
-  adults: 0,
-  children: 0,
-  infants: 0,
-  pets: 0,
-});
 
 
-const [selectedOption, setSelectedOption] = useState("Exact dates");
+
+
+
+
+
+
 
 
 // Flexible mode
@@ -77,32 +96,29 @@ const handleFlexibleMonth = (month) => {
   });
 };
 
+
 const increaseGuest = (type) => {
-  setGuests((prev) => {
-    const totalGuests =
-      prev.adults + prev.children + prev.infants;
+  const totalGuests =
+    guests.adults + guests.children + guests.infants;
 
-    // Pets ki maximum limit 5 hogi
-    if (type === "pets") {
-      if (prev.pets >= 5) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        pets: prev.pets + 1,
-      };
+  if (type === "pets") {
+    if (guests.pets >= 5) {
+      return;
     }
 
-    // Adults + children + infants ki maximum limit 16 hogi
-    if (totalGuests >= 16) {
-      return prev;
-    }
+    dispatch({
+      type: "search/increasePets",
+    });
 
-    return {
-      ...prev,
-      [type]: prev[type] + 1,
-    };
+    return;
+  }
+
+  if (totalGuests >= 16) {
+    return;
+  }
+
+  dispatch({
+    type: `search/increase${type.charAt(0).toUpperCase() + type.slice(1)}`,
   });
 };
 
@@ -110,15 +126,14 @@ const increaseGuest = (type) => {
 
 
 
-
-
-
 const decreaseGuest = (type) => {
-  setGuests((prev) => ({
-    ...prev,
-    [type]: Math.max(0, prev[type] - 1),
-  }));
+  dispatch({
+    type: `search/decrease${type.charAt(0).toUpperCase() + type.slice(1)}`,
+  });
 };
+
+
+
 
 if (isMobile) {
   return (
@@ -359,8 +374,9 @@ lg:px-6
   {/* SEARCH BUTTON */}
   <button
     onClick={(e) => {
-      e.stopPropagation();
-    }}
+  e.stopPropagation();
+  navigate("/search");
+}}
     className={`
     mr-1
 sm:mr-2
@@ -410,10 +426,12 @@ sm:h-[48px]
 
 
 {activeSection === "where" && (
-  <WhereDropdown
-    setSelectedDestination={setSelectedDestination}
-    setActiveSection={setActiveSection}
-  />
+ <WhereDropdown
+  setSelectedDestination={(destination) =>
+    dispatch(setLocation(destination))
+  }
+  setActiveSection={setActiveSection}
+/>
 )}
 
 
@@ -460,28 +478,28 @@ sm:h-[48px]
 
 {location.pathname === "/experiences" ||
 location.pathname === "/services" ? (
-  <ExperienceCalendar
-    onDateSelect={(date) => {
-      setStartDate(date);
-      setActiveSection("when");
-    }}
-  />
+<ExperienceCalendar
+  onDateSelect={(date) => {
+    dispatch(setStartDate(date));
+    setActiveSection("when");
+  }}
+/>
 ) : (
-  <Calendar
-    startDate={startDate}
-    endDate={endDate}
-    setStartDate={setStartDate}
-    setEndDate={setEndDate}
-    calendarTab={calendarTab}
-    setCalendarTab={setCalendarTab}
-    selectedOption={selectedOption}
-    setSelectedOption={setSelectedOption}
-    flexibleDuration={flexibleDuration}
-    setFlexibleDuration={setFlexibleDuration}
-    selectedMonths={selectedMonths}
-    setSelectedMonths={setSelectedMonths}
-    handleFlexibleMonth={handleFlexibleMonth}
-  />
+ <Calendar
+  startDate={startDate}
+  endDate={endDate}
+  setStartDate={(date) => dispatch(setStartDate(date))}
+  setEndDate={(date) => dispatch(setEndDate(date))}
+  calendarTab={calendarTab}
+  setCalendarTab={setCalendarTab}
+  selectedOption={selectedOption}
+  setSelectedOption={setSelectedOption}
+  flexibleDuration={flexibleDuration}
+  setFlexibleDuration={setFlexibleDuration}
+  selectedMonths={selectedMonths}
+  setSelectedMonths={setSelectedMonths}
+  handleFlexibleMonth={handleFlexibleMonth}
+/>
 )}
 
 {location.pathname !== "/experiences" &&
