@@ -4,12 +4,13 @@ import { FiX } from "react-icons/fi";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
 import logo from "../assests/airbnblogo.png";
-
-function AuthModal({ onClose }) {
+function AuthModal({ onClose, onAuthSuccess }) {
   const [mode, setMode] = useState("initial");
 
   const [email, setEmail] = useState("");
@@ -31,56 +32,93 @@ function AuthModal({ onClose }) {
 
     setMode("password");
   };
+const handleGoogleLogin = async () => {
+  setError("");
+  setLoading(true);
 
-  // Firebase login/signup
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  try {
+    const provider = new GoogleAuthProvider();
 
-    setError("");
-    setLoading(true);
+    const result = await signInWithPopup(auth, provider);
 
-    try {
-      if (mode === "signup") {
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+    console.log("Google user:", result.user);
 
-        alert("Account created successfully!");
-        onClose();
-      } else {
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+    alert("Logged in with Google successfully!");
 
-        alert("Logged in successfully!");
-        onClose();
-      }
-    } catch (error) {
-      console.log(error);
+    onClose();
+  } catch (error) {
+    console.error("Google login error:", error);
 
-      if (error.code === "auth/email-already-in-use") {
-        setError("This email is already registered.");
-      } else if (error.code === "auth/invalid-email") {
-        setError("Please enter a valid email.");
-      } else if (error.code === "auth/weak-password") {
-        setError("Password should be at least 6 characters.");
-      } else if (
-        error.code === "auth/invalid-credential" ||
-        error.code === "auth/wrong-password" ||
-        error.code === "auth/user-not-found"
-      ) {
-        setError("Invalid email or password.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+    if (error.code === "auth/popup-closed-by-user") {
+      setError("Google login was cancelled.");
+    } else if (error.code === "auth/popup-blocked") {
+      setError("Please allow popups for Google login.");
+    } else {
+      setError("Google login failed. Please try again.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+  // Firebase login/signup
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  setError("");
+  setLoading(true);
+
+  try {
+    if (mode === "signup") {
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      alert("Account created successfully!");
+
+      if (onAuthSuccess) {
+        onAuthSuccess();
+      }
+
+      onClose();
+    } else {
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      alert("Logged in successfully!");
+
+      if (onAuthSuccess) {
+        onAuthSuccess();
+      }
+
+      onClose();
+    }
+  } catch (error) {
+    console.log(error);
+
+    if (error.code === "auth/email-already-in-use") {
+      setError("This email is already registered.");
+    } else if (error.code === "auth/invalid-email") {
+      setError("Please enter a valid email.");
+    } else if (error.code === "auth/weak-password") {
+      setError("Password should be at least 6 characters.");
+    } else if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+    ) {
+      setError("Invalid email or password.");
+    } else {
+      setError("Something went wrong. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 px-4">
@@ -231,7 +269,9 @@ function AuthModal({ onClose }) {
             {/* GOOGLE */}
 
             <button
+            
               type="button"
+              onClick={handleGoogleLogin}
               className="
                 flex
                 h-[58px]

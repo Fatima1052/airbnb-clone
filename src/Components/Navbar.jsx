@@ -1,4 +1,5 @@
 import AuthModal from "./AuthModal";
+import { useAuth } from "../AuthContext";
 import logo from "../assests/airbnblogo.png";
 import all from  "../assests/all.jfif";
 import home from "../assests/home.png";
@@ -11,17 +12,34 @@ import {
   FiHelpCircle,
 } from "react-icons/fi";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+const {
+  isAuthModalOpen,
+  openAuthModal,
+  closeAuthModal,
+  currentUser,
+  isLoggedIn,
+  logout,
+} = useAuth();
+const userName =
+  currentUser?.displayName ||
+  currentUser?.email?.split("@")[0] ||
+  "Guest";
+
+const userInitial = userName.charAt(0).toUpperCase();
+console.log("Navbar current user:", currentUser);
+console.log("Navbar logged in:", isLoggedIn);
 
 const [activeTab, setActiveTab] = useState("/");
 const [, setIsScrolled] = useState(false);
 const [isMenuOpen, setIsMenuOpen] = useState(false);
-const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+const [isProfileOpen, setIsProfileOpen] = useState(false);
 const menuRef = useRef(null);
 const allControls = useAnimation();
 const homeControls = useAnimation();
@@ -477,7 +495,7 @@ xl:gap-[15px]
   {/* Become a host */}
 
  <button
-  onClick={() => setIsAuthModalOpen(true)}
+onClick={openAuthModal}
   className="
     hidden
     lg:block
@@ -491,31 +509,62 @@ xl:gap-[15px]
     hover:bg-[#f5f5f5]
   "
 >
-  Become a host
+  {isLoggedIn ? "Switch to hosting" : "Become a host"}
 </button>
-
 
   {/* Globe */}
 
+{!isLoggedIn && (
   <button
     className="
       flex
       h-[34px]
-w-[34px]
-sm:h-[38px]
-sm:w-[38px]
+      w-[34px]
+      sm:h-[38px]
+      sm:w-[38px]
       items-center
       justify-center
       rounded-full
-     bg-[#eeeeee]
-    text-[18px]
-sm:text-[20px]
+      bg-[#eeeeee]
+      text-[18px]
+      sm:text-[20px]
       transition
-     hover:bg-[#e5e5e5]
+      hover:bg-[#e5e5e5]
     "
   >
     <FiGlobe />
   </button>
+)}
+
+
+  {/* PROFILE INITIAL - ONLY WHEN LOGGED IN */}
+
+  {isLoggedIn && (
+    <button
+      onClick={() => navigate("/profile")}
+      className="
+        flex
+        h-[34px]
+        w-[34px]
+        sm:h-[38px]
+        sm:w-[38px]
+        items-center
+        justify-center
+        rounded-full
+        bg-[#f7e8dc]
+        text-[14px]
+        sm:text-[15px]
+        font-semibold
+        text-[#222222]
+        transition
+        hover:bg-[#e5e5e5]
+      "
+    >
+      {userInitial}
+    </button>
+  )}
+
+
 
 
   {/* Menu button */}
@@ -671,10 +720,10 @@ sm:w-[285px]
       {/* Login */}
 
     <button
-  onClick={() => {
-    setIsAuthModalOpen(true);
-    setIsMenuOpen(false);
-  }}
+ onClick={() => {
+  openAuthModal();
+  setIsMenuOpen(false);
+}}
   className="
     w-full
     px-5
@@ -700,7 +749,7 @@ sm:w-[285px]
   </div>
 {isAuthModalOpen && (
   <AuthModal
-    onClose={() => setIsAuthModalOpen(false)}
+    onClose={closeAuthModal}
   />
 )}
 </header>

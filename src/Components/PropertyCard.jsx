@@ -1,7 +1,17 @@
 
 import { Link } from "react-router-dom";
-function PropertyCard({ id,image, title, price, rating, guestFavorite, original, location }){
-
+function PropertyCard({
+  id,
+  image,
+  title,
+  price,
+  rating,
+  guestFavorite,
+  original,
+  location,
+  isFavorite,
+  onFavorite,
+}) {
   return(
 
  <Link
@@ -44,34 +54,48 @@ rounded-[14px]
   className="w-full h-full object-cover"
 />
 
-                <button className="absolute right-[10px] top-[10px] flex h-[38px] w-[38px] cursor-pointer items-center justify-center border-none bg-transparent text-[35px] text-white [text-shadow:0_2px_5px_rgba(51,50,50,0.4)]">
-                    ♡
-                </button>
+                <button
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onFavorite(id);
+  }}
+  className="absolute right-[10px] top-[10px] flex h-[38px] w-[38px] cursor-pointer items-center justify-center border-none bg-transparent text-[35px] text-white [text-shadow:0_2px_5px_rgba(51,50,50,0.4)]"
+>
+  {isFavorite ? "♥" : "♡"}
+</button>
 
             </div>
 <div className="mt-[10px]">
+
   <h3 className="m-0 text-[13px]
-sm:text-[14px]
-md:text-[15px] font-semibold text-[#222222]">
+  sm:text-[14px]
+  md:text-[15px]
+  font-semibold text-[#222222]">
     {title}
-</h3>
+  </h3>
 
+ 
 
-    <div className="mt-[1px] flex items-center gap-[14px]">
+ 
 
-      <p className="m-0 text-[12px]
-sm:text-[13px] font-normal text-[#6A6A6A]">
-    {price}
-</p>
-       <div className="-ml-[8px] flex items-center gap-[2px] text-[13px] text-[#222222]">
-  <span>★</span>
-  <span>{rating}</span>
-</div>
+   <div className="mt-[7px] flex items-center gap-[14px]">
 
+    <p className="m-0 text-[12px]
+    sm:text-[13px] font-normal text-[#222222]">
+      {price}
+    </p>
+
+    <div className="-ml-[8px] flex items-center gap-[2px] text-[13px] text-[#222222]">
+      <span>★</span>
+      <span>{rating}</span>
     </div>
 
+  </div>
+
 </div>
-        </div>
+
+</div>
 
 </Link>
     )

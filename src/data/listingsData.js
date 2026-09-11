@@ -94,6 +94,7 @@ export const popularHomes = [
     rating: "4.91",
     guestFavorite: true,
      location: "Islamabad",
+
   },
   {
     id: 2,
@@ -747,7 +748,9 @@ export const bakuHomes = [
 ];
 
 
-export const allListings = [
+
+
+const listings = [
   ...popularHomes,
   ...greatHotels,
   ...weekendHomes,
@@ -760,3 +763,69 @@ export const allListings = [
   ...istanbulHomes,
   ...bakuHomes,
 ];
+
+export const allListings = listings;
+
+const imageSets = [
+  [house1, house2, house3, house4, house5, house6],
+  [hotel1, hotel2, hotel3, hotel4, hotel5, hotel6],
+  [weekend1, weekend2, weekend3, weekend4, weekend5, weekend6],
+  [muree1, muree2, muree3, muree4, muree5, muree6],
+  [nathia1, nathia2, nathia3, nathia4, nathia5, nathia6],
+  [karachi1, karachi2, karachi3, karachi4, karachi5, karachi6],
+  [faisalabad1, faisalabad2, faisalabad3, faisalabad4, faisalabad5, faisalabad6],
+  [dubai1, dubai2, dubai3, dubai4, dubai5, dubai6],
+  [bhurbun1, bhurbun2, bhurbun3, bhurbun4, bhurbun5, bhurbun6],
+  [istanbul1, istanbul2, istanbul3, istanbul4, istanbul5, istanbul6],
+  [baku1, baku2, baku3, baku4, baku5, baku6],
+];
+
+
+const imageDescriptions = [
+  {
+    title: "Living room",
+    subtitle: "Panoramic view · Comfortable seating",
+  },
+  {
+    title: "Bedroom",
+    subtitle: "2 king beds · Cozy sleeping space",
+  },
+  {
+    title: "Kitchen",
+    subtitle: "Fully equipped · Modern kitchen",
+  },
+  {
+    title: "Bathroom",
+    subtitle: "Clean and modern bathroom",
+  },
+  {
+    title: "Bedroom",
+    subtitle: "Comfortable bedroom · Natural light",
+  },
+  {
+    title: "Balcony",
+    subtitle: "Beautiful view · Relaxing outdoor space",
+  },
+];
+
+export const listingImages = Object.fromEntries(
+  allListings.map((listing, listingIndex) => {
+    const images = imageSets[Math.floor(listingIndex / 6)];
+
+    return [
+      listing.id,
+
+      images.map((image, imageIndex) => ({
+        url: image,
+
+        title: imageDescriptions[imageIndex].title,
+
+        subtitle: imageDescriptions[imageIndex].subtitle,
+
+        details: listing.details || "Comfortable stay",
+
+        price: listing.price,
+      })),
+    ];
+  })
+);

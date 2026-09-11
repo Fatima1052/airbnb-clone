@@ -1,25 +1,98 @@
-
+import { useAuthModal } from "../AuthContext";
 import PropertyCard from "./PropertyCard";
 import {
   FiArrowRight,
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
+import { auth, db } from "../firebase";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
 import { useRef, useState, useEffect } from "react";
 
 
 
 function Listings({ title, subtitle, listings }) {
-
-
-
+const { openAuthModal } = useAuthModal();
+const [favorites, setFavorites] = useState([]);
 
 
 
 const sliderRef = useRef(null);
 const [isAtStart, setIsAtStart] = useState(true);
+useEffect(() => {
+  const loadFavorites = async () => {
+    const user = auth.currentUser;
 
+    if (!user) return;
+
+    try {
+      const favoritesRef = collection(
+        db,
+        "users",
+        user.uid,
+        "favorites"
+      );
+
+      const snapshot = await getDocs(favoritesRef);
+
+      const favoriteIds = snapshot.docs.map((favorite) =>
+        Number(favorite.id)
+      );
+
+      setFavorites(favoriteIds);
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+    }
+  };
+
+  loadFavorites();
+}, []);
+const toggleFavorite = async (listingId) => {
+  const user = auth.currentUser;
+
+ if (!user) {
+  console.log("FAVORITE CLICK - USER NOT LOGGED IN");
+  openAuthModal();
+  return;
+}
+
+  const favoriteRef = doc(
+    db,
+    "users",
+    user.uid,
+    "favorites",
+    String(listingId)
+  );
+
+  try {
+    if (favorites.includes(listingId)) {
+      await deleteDoc(favoriteRef);
+
+      setFavorites((prev) =>
+        prev.filter((id) => id !== listingId)
+      );
+    } else {
+      await setDoc(favoriteRef, {
+        listingId: listingId,
+        createdAt: new Date(),
+      });
+
+      setFavorites((prev) => [
+        ...prev,
+        listingId,
+      ]);
+    }
+  } catch (error) {
+    console.error("Error updating favorite:", error);
+  }
+};
 const checkScrollPosition = () => {
   if (!sliderRef.current) return;
 
@@ -167,19 +240,22 @@ md:text-[16px] text-[#6a6a6a]">
           {listings.map((listing) => (
 
 <PropertyCard
-
-key={listing.id}
-id={listing.id}
-image={listing.image}
-title={listing.title}
-price={listing.price}
-rating={listing.rating}
-guestFavorite={listing.guestFavorite}
-original={listing.original}
-location={listing.location}
-
+  id={listing.id}
+  isFavorite={favorites.includes(listing.id)}
+onFavorite={toggleFavorite}
+  image={listing.image}
+  title={listing.title}
+  description={listing.description}
+  details={listing.details}
+  price={listing.price}
+  oldPrice={listing.oldPrice}
+  nights={listing.nights}
+  rating={listing.rating}
+  reviews={listing.reviews}
+  guestFavorite={listing.guestFavorite}
+  original={listing.original}
+  location={listing.location}
 />
-
 ))}
 
         </div>
