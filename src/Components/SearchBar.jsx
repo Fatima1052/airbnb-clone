@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Calendar from "./Calender";
 import WhereDropdown from "./WhereDropdown";
 import ExperienceCalendar from "./ExperienceCalendar";
+import MobileSearchSheet from "./MobileSearchSheet";
 import { FiSliders } from "react-icons/fi";
 import { 
   FiSearch, 
@@ -68,8 +69,9 @@ const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 }, []);
 
   const [activeSection, setActiveSection] = useState("");
-  
+
 const [hoveredSection, setHoveredSection] = useState("");
+const [sheetOpen, setSheetOpen] = useState(false);
 
 
 
@@ -136,9 +138,24 @@ const decreaseGuest = (type) => {
 
 
 if (isMobile) {
+  const totalGuests = guests.adults + guests.children + guests.infants;
+  const mobileSummary = [
+    selectedDestination ? selectedDestination.split(",")[0] : "Anywhere",
+    startDate
+      ? `${startDate.format("D MMM")}${
+          endDate ? ` – ${endDate.format("D MMM")}` : ""
+        }`
+      : "Any week",
+    totalGuests > 0
+      ? `${totalGuests} guest${totalGuests === 1 ? "" : "s"}`
+      : "Add guests",
+  ].join(" • ");
+
   return (
     <div className="px-4 py-3">
       <button
+        type="button"
+        onClick={() => setSheetOpen(true)}
         className="
         flex
         items-center
@@ -153,26 +170,28 @@ if (isMobile) {
         shadow-md
         "
       >
-        <div className="flex items-center gap-3">
-          <FiSearch size={18} />
+        <div className="flex min-w-0 items-center gap-3">
+          <FiSearch size={18} className="shrink-0" />
 
-          <div className="text-left">
+          <div className="min-w-0 text-left">
             <h4 className="text-[14px] font-semibold">
               Where to?
             </h4>
 
-          <p className="text-[12px] text-[#717171]">
-  {location.pathname === "/experiences"
-    ? "Search by city or landmark"
-    : "Anywhere • Any week • Add guests"}
-</p>
+            <p className="truncate text-[12px] text-[#717171]">
+              {mobileSummary}
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-center w-9 h-9 rounded-full border">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border">
           <FiSliders size={16} />
         </div>
       </button>
+
+      {sheetOpen && (
+        <MobileSearchSheet onClose={() => setSheetOpen(false)} />
+      )}
     </div>
   );
 }

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FiMenu } from "react-icons/fi";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
+import UserMenu from "./Components/UserMenu";
 import { useAuth } from "./AuthContext";
-import { db } from "./firebase";
+import { getProfile, saveProfile } from "./services/profile";
 import logo from "./assests/airbnblogo.png";
 
 function Profile() {
@@ -13,8 +12,11 @@ function Profile() {
   const {
     currentUser,
     isLoggedIn,
+    authLoading,
     logout,
   } = useAuth();
+
+  const [searchParams] = useSearchParams();
 
   // ALL HOOKS MUST COME BEFORE ANY EARLY RETURN
 
@@ -39,8 +41,12 @@ function Profile() {
 
   const [profileLoading, setProfileLoading] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
-const [activeSection, setActiveSection] = useState("about");
-  // LOAD PROFILE FROM FIRESTORE
+const [activeSection, setActiveSection] = useState(
+    ["about", "trips", "connections"].includes(searchParams.get("tab"))
+      ? searchParams.get("tab")
+      : "about"
+  );
+  // LOAD PROFILE
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -50,12 +56,9 @@ const [activeSection, setActiveSection] = useState("about");
       }
 
       try {
-        const profileRef = doc(db, "users", currentUser.uid);
-        const profileSnap = await getDoc(profileRef);
+        const data = await getProfile(currentUser.uid);
 
-        if (profileSnap.exists()) {
-          const data = profileSnap.data();
-
+        if (data) {
           setProfileData({
             name: data.name || userName,
             bio: data.bio || "",
@@ -76,7 +79,7 @@ const [activeSection, setActiveSection] = useState("about");
     loadProfile();
   }, [currentUser?.uid, userName]);
 
-  // SAVE PROFILE TO FIRESTORE
+  // SAVE PROFILE
 
   const handleSaveProfile = async () => {
     if (!currentUser?.uid) return;
@@ -84,21 +87,14 @@ const [activeSection, setActiveSection] = useState("about");
     setSavingProfile(true);
 
     try {
-      const profileRef = doc(db, "users", currentUser.uid);
-
       const newProfileData = {
         name: editName.trim() || userName,
         bio: editBio.trim(),
         location: editLocation.trim(),
         email: currentUser.email || "",
-        updatedAt: new Date(),
       };
 
-      await setDoc(
-        profileRef,
-        newProfileData,
-        { merge: true }
-      );
+      await saveProfile(currentUser.uid, newProfileData);
 
       setProfileData({
         name: newProfileData.name,
@@ -121,10 +117,24 @@ const [activeSection, setActiveSection] = useState("about");
     navigate("/");
   };
 
-  // REDIRECT ONLY AFTER ALL HOOKS
+  // Send visitors who aren't logged in to the home page. This has to happen in
+  // an effect (not while rendering) and only once Firebase has finished
+  // checking the session – otherwise refreshing this page always kicked you out.
+  useEffect(() => {
+    if (!authLoading && !isLoggedIn) {
+      navigate("/", { replace: true });
+    }
+  }, [authLoading, isLoggedIn, navigate]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-[16px] text-[#717171]">Loading your profile…</p>
+      </div>
+    );
+  }
 
   if (!isLoggedIn || !currentUser) {
-    navigate("/");
     return null;
   }
 
@@ -189,66 +199,7 @@ const [activeSection, setActiveSection] = useState("about");
 
         {/* RIGHT SIDE */}
 
-        <div className="flex items-center gap-3">
-
-          {/* SWITCH TO HOSTING */}
-
-          <button
-            className="
-              hidden
-              sm:block
-              rounded-full
-              px-4
-              py-3
-              text-[15px]
-              font-semibold
-              text-[#222222]
-              hover:bg-[#f7f7f7]
-            "
-          >
-            Switch to hosting
-          </button>
-
-
-          {/* PROFILE INITIAL */}
-
-          <button
-            onClick={() => navigate("/profile")}
-            className="
-              flex
-              h-[40px]
-              w-[40px]
-              items-center
-              justify-center
-              rounded-full
-              bg-[#f7e8dc]
-              text-[15px]
-              font-semibold
-              text-[#222222]
-            "
-          >
-            {userInitial}
-          </button>
-
-
-          {/* MENU */}
-
-          <button
-            className="
-              flex
-              h-[40px]
-              w-[40px]
-              items-center
-              justify-center
-              rounded-full
-              bg-[#f7f7f7]
-              hover:bg-[#eeeeee]
-            "
-          >
-            <FiMenu size={21} />
-          </button>
-
-        </div>
+        <UserMenu />
 
       </header>
 

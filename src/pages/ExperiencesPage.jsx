@@ -1,38 +1,26 @@
-
 import Listings from "../Components/Listings";
-import { airbnbOriginals } from "../data/experienceData";
-import { kualalumpurexperience } from "../data/experienceData";
+import {
+  airbnbOriginals,
+  kualalumpurexperience,
+} from "../data/experienceData";
 
-function ExperiencesPage(){
+function ExperiencesPage() {
+  return (
+    <>
+      <Listings
+        kind="experience"
+        title="Airbnb Originals"
+        subtitle="Hosted by the world's most interesting people"
+        listings={airbnbOriginals}
+      />
 
-return(
-
-<>
-
-<Listings
-
-title="Airbnb Originals"
-
-subtitle="Hosted by the world's most interesting people"
-
-listings={airbnbOriginals}
-
-/>
-
-<Listings
-
-title="Experiences in KualaLumpur"
-
-
-
-listings={kualalumpurexperience}
-
-/>
-
-</>
-
-)
-
+      <Listings
+        kind="experience"
+        title="Experiences in Kuala Lumpur"
+        listings={kualalumpurexperience}
+      />
+    </>
+  );
 }
 
 export default ExperiencesPage;

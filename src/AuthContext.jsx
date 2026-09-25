@@ -7,6 +7,7 @@ import {
 
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase";
+import AuthModal from "./Components/AuthModal";
 
 const AuthContext = createContext();
 
@@ -26,8 +27,6 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("Current Firebase user:", user);
-
       setCurrentUser(user);
       setAuthLoading(false);
     });
@@ -58,6 +57,10 @@ export function AuthProvider({ children }) {
       }}
     >
       {children}
+
+      {/* Rendered here (not inside Navbar) so the login popup works on every
+          page: search results, listing details, wishlists, etc. */}
+      {isAuthModalOpen && <AuthModal onClose={closeAuthModal} />}
     </AuthContext.Provider>
   );
 }

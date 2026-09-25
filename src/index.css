@@ -87,3 +87,48 @@ button{
     scrollbar-width:thin;
     scrollbar-color:#B9B9B9 transparent;
 }
+
+/* ---------- Map price pins (Leaflet) ---------- */
+.price-pin-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.price-pin {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  padding: 6px 10px;
+  border-radius: 28px;
+  background: #ffffff;
+  color: #222222;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.price-pin:hover,
+.price-pin.active {
+  background: #222222;
+  color: #ffffff;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* Hides the scrollbar on the horizontal card sliders but keeps them scrollable */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

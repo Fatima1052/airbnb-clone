@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
@@ -11,20 +11,17 @@ function ListingDetailCalendar({
 
   const currentMonth = dayjs().startOf("month");
 
-  const firstMonth = currentMonth;
-  const secondMonth = currentMonth.add(1, "month");
+  // The month shown on the left; the arrows move it forward / back.
+  const [firstMonth, setFirstMonth] = useState(currentMonth);
+  const secondMonth = firstMonth.add(1, "month");
+
+  const canGoBack = firstMonth.isAfter(currentMonth, "month");
 
   const nights = useMemo(() => {
     if (!startDate || !endDate) return 0;
 
     return endDate.diff(startDate, "day");
   }, [startDate, endDate]);
-
-  const formatDate = (date) => {
-    if (!date) return "Add date";
-
-    return date.format("MMM D");
-  };
 
   const handleDateClick = (date) => {
     if (date.isBefore(dayjs(), "day")) return;
@@ -66,11 +63,15 @@ function ListingDetailCalendar({
     return days;
   };
 
-  const renderMonth = (month) => {
+  const renderMonth = (month, hideOnMobile = false) => {
     const days = getMonthDays(month);
 
     return (
-      <div className="flex-1 min-w-0">
+      <div
+        className={`min-w-0 flex-1 ${
+          hideOnMobile ? "hidden md:block" : ""
+        }`}
+      >
 
         {/* MONTH TITLE */}
 
@@ -223,7 +224,10 @@ function ListingDetailCalendar({
   };
 
   return (
-    <section className="border-t border-[#dddddd] pt-8">
+    <section
+      id="availability"
+      className="scroll-mt-[100px] border-t border-[#dddddd] pt-8"
+    >
 
       {/* HEADING */}
 
@@ -255,7 +259,10 @@ function ListingDetailCalendar({
 
         <button
           type="button"
-          className="
+          aria-label="Previous month"
+          disabled={!canGoBack}
+          onClick={() => setFirstMonth((month) => month.subtract(1, "month"))}
+          className={`
             absolute
             left-[-14px]
             top-[5px]
@@ -268,7 +275,8 @@ function ListingDetailCalendar({
             rounded-full
             bg-white
             hover:bg-[#f7f7f7]
-          "
+            ${canGoBack ? "" : "cursor-not-allowed opacity-30 hover:bg-white"}
+          `}
         >
           <FiChevronLeft
             size={18}
@@ -280,6 +288,8 @@ function ListingDetailCalendar({
 
         <button
           type="button"
+          aria-label="Next month"
+          onClick={() => setFirstMonth((month) => month.add(1, "month"))}
           className="
             absolute
             right-[-14px]
@@ -307,7 +317,7 @@ function ListingDetailCalendar({
 
           {renderMonth(firstMonth)}
 
-          {renderMonth(secondMonth)}
+          {renderMonth(secondMonth, true)}
 
         </div>
 

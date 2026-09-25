@@ -1,146 +1,249 @@
 import { useState } from "react";
 import { FiX } from "react-icons/fi";
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { z } from "zod";
 
 import { auth } from "../firebase";
 import logo from "../assests/airbnblogo.png";
+
+// -----------------------------
+// ZOD VALIDATION
+// -----------------------------
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required.")
+    .email("Please enter a valid email address."),
+
+  password: z
+    .string()
+    .min(1, "Password is required.")
+    .min(6, "Password must be at least 6 characters."),
+});
+
+const signupSchema = z
+  .object({
+    email: z
+      .string()
+      .trim()
+      .min(1, "Email is required.")
+      .email("Please enter a valid email address."),
+
+    password: z
+      .string()
+      .min(1, "Password is required.")
+      .min(6, "Password must be at least 6 characters."),
+
+    confirmPassword: z
+      .string()
+      .min(1, "Please confirm your password."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
 function AuthModal({ onClose, onAuthSuccess }) {
-  const [mode, setMode] = useState("initial");
+  // Signup is the first screen
+  const [mode, setMode] = useState("signup");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Continue from Airbnb-style first screen
-  const handleEmailContinue = (e) => {
+  // -----------------------------
+  // CLEAR FORM
+  // -----------------------------
+
+  const switchMode = (newMode) => {
+    setMode(newMode);
+    setError("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  // -----------------------------
+  // LOGIN
+  // -----------------------------
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     setError("");
 
-    if (!email) {
-      setError("Please enter your email.");
+    // ZOD VALIDATION FIRST
+    const result = loginSchema.safeParse({
+      email,
+      password,
+    });
+
+    if (!result.success) {
+      setError(result.error.issues[0].message);
       return;
     }
 
-    setMode("password");
-  };
-const handleGoogleLogin = async () => {
-  setError("");
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const provider = new GoogleAuthProvider();
-
-    const result = await signInWithPopup(auth, provider);
-
-    console.log("Google user:", result.user);
-
-    alert("Logged in with Google successfully!");
-
-    onClose();
-  } catch (error) {
-    console.error("Google login error:", error);
-
-    if (error.code === "auth/popup-closed-by-user") {
-      setError("Google login was cancelled.");
-    } else if (error.code === "auth/popup-blocked") {
-      setError("Please allow popups for Google login.");
-    } else {
-      setError("Google login failed. Please try again.");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-  // Firebase login/signup
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  setError("");
-  setLoading(true);
-
-  try {
-    if (mode === "signup") {
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      alert("Account created successfully!");
-
-      if (onAuthSuccess) {
-        onAuthSuccess();
-      }
-
-      onClose();
-    } else {
+    try {
       await signInWithEmailAndPassword(
         auth,
-        email,
+        email.trim(),
         password
       );
-
-      alert("Logged in successfully!");
 
       if (onAuthSuccess) {
         onAuthSuccess();
       }
 
       onClose();
-    }
-  } catch (error) {
-    console.log(error);
+    } catch (error) {
+      console.error("Login error:", error);
 
-    if (error.code === "auth/email-already-in-use") {
-      setError("This email is already registered.");
-    } else if (error.code === "auth/invalid-email") {
-      setError("Please enter a valid email.");
-    } else if (error.code === "auth/weak-password") {
-      setError("Password should be at least 6 characters.");
-    } else if (
-      error.code === "auth/invalid-credential" ||
-      error.code === "auth/wrong-password" ||
-      error.code === "auth/user-not-found"
-    ) {
-      setError("Invalid email or password.");
-    } else {
-      setError("Something went wrong. Please try again.");
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/user-not-found"
+      ) {
+        setError("Invalid email or password.");
+      } else if (error.code === "auth/too-many-requests") {
+        setError(
+          "Too many unsuccessful attempts. Please try again later."
+        );
+      } else if (error.code === "auth/network-request-failed") {
+        setError("Network error. Please check your internet connection.");
+      } else {
+        setError("Unable to log in. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
+  // -----------------------------
+  // SIGNUP
+  // -----------------------------
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    setError("");
+
+    // ZOD VALIDATION FIRST
+    const result = signupSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    });
+
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      if (onAuthSuccess) {
+        onAuthSuccess();
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Signup error:", error);
+
+      if (error.code === "auth/email-already-in-use") {
+        setError(
+          "This email is already registered. Please log in instead."
+        );
+      } else if (error.code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else if (error.code === "auth/weak-password") {
+        setError("Password should be at least 6 characters.");
+      } else if (error.code === "auth/network-request-failed") {
+        setError("Network error. Please check your internet connection.");
+      } else {
+        setError("Unable to create your account. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -----------------------------
+  // GOOGLE LOGIN / SIGNUP
+  // -----------------------------
+
+  const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+
+      console.log("Google user:", result.user);
+
+      if (onAuthSuccess) {
+        onAuthSuccess();
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Google login error:", error);
+
+      if (error.code === "auth/popup-closed-by-user") {
+        setError("Google sign in was cancelled.");
+      } else if (error.code === "auth/popup-blocked") {
+        setError("Please allow popups for Google sign in.");
+      } else {
+        setError("Google sign in failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -----------------------------
+  // UI
+  // -----------------------------
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 px-4">
 
       {/* MODAL */}
- <div 
-  className=" 
-    auth-modal-scroll
-    relative 
-    w-full 
-    max-w-[520px] 
-    max-h-[90vh] 
-    overflow-y-auto 
-    overflow-x-hidden
-    rounded-[28px] 
-    bg-white 
-    shadow-[0_8px_30px_rgba(0,0,0,0.25)] 
-  " 
->
+      <div
+        className="
+          relative
+          w-full
+          max-w-[500px]
+          max-h-[90vh]
+          overflow-y-auto
+          rounded-[24px]
+          bg-white
+          shadow-[0_8px_30px_rgba(0,0,0,0.25)]
+        "
+      >
 
         {/* CLOSE BUTTON */}
         <button
+          type="button"
           onClick={onClose}
           className="
             absolute
@@ -148,260 +251,163 @@ const handleSubmit = async (e) => {
             top-5
             z-10
             flex
-            h-[40px]
-            w-[40px]
+            h-10
+            w-10
             items-center
             justify-center
             rounded-full
             text-[#222]
+            transition
             hover:bg-[#f5f5f5]
           "
+          aria-label="Close"
         >
           <FiX size={22} />
         </button>
 
+        {/* =========================
+            SIGNUP SCREEN
+        ========================= */}
 
-        {/* INITIAL AIRBNB SCREEN */}
+        {mode === "signup" && (
+          <div className="px-7 pb-8 pt-14 sm:px-9">
 
-        {mode === "initial" && (
-          <div className="px-6 pb-7 pt-12">
-
-            {/* AIRBNB LOGO */}
-
-            <div className="mb-7 flex justify-center">
+            {/* LOGO */}
+            <div className="mb-5 flex justify-center">
               <img
                 src={logo}
                 alt="Airbnb"
-                className="h-[52px] w-[52px] object-contain"
+                className="h-[48px] w-[48px] object-contain"
               />
             </div>
-
 
             {/* TITLE */}
-
-            <h2
-              className="
-                mb-9
-                text-center
-                text-[30px]
-                font-semibold
-                tracking-[-0.8px]
-                text-[#222]
-              "
-            >
-              Log in or sign up
-            </h2>
-
-
-            {/* EMAIL FORM */}
-
-            <form onSubmit={handleEmailContinue}>
-
-              <input
-                type="email"
-                placeholder="Phone number or email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="
-                  h-[62px]
-                  w-full
-                  rounded-[12px]
-                  border
-                  border-[#8c8c8c]
-                  px-5
-                  text-[17px]
-                  text-[#222]
-                  outline-none
-                  placeholder:text-[#717171]
-                  focus:border-[2px]
-                  focus:border-black
-                "
-              />
-
-
-              {/* ERROR */}
-
-              {error && (
-                <p className="mt-3 text-[14px] font-medium text-red-600">
-                  {error}
-                </p>
-              )}
-
-
-              {/* CONTINUE */}
-
-              <button
-                type="submit"
-                className="
-                  mt-5
-                  h-[62px]
-                  w-full
-                  rounded-[12px]
-                  bg-[#E61E4D]
-                  text-[17px]
-                  font-semibold
-                  text-white
-                  transition
-                  hover:bg-[#D41142]
-                "
-              >
-                Continue
-              </button>
-
-            </form>
-
-
-            {/* OR */}
-
-            <div className="my-7 flex items-center gap-4">
-
-              <div className="h-px flex-1 bg-[#dddddd]" />
-
-              <span className="text-[15px] text-[#222]">
-                or
-              </span>
-
-              <div className="h-px flex-1 bg-[#dddddd]" />
-
-            </div>
-
-
-            {/* GOOGLE */}
-
-            <button
-            
-              type="button"
-              onClick={handleGoogleLogin}
-              className="
-                flex
-                h-[58px]
-                w-full
-                items-center
-                justify-center
-                gap-3
-                rounded-[10px]
-                border
-                border-[#222]
-                text-[16px]
-                font-semibold
-                text-[#222]
-                transition
-                hover:bg-[#f7f7f7]
-              "
-            >
-
-              <span className="text-[21px] font-bold">
-                G
-              </span>
-
-              Continue with Google
-
-            </button>
-
-
-            {/* APPLE */}
-
-            <button
-              type="button"
-              className="
-                mt-3
-                flex
-                h-[58px]
-                w-full
-                items-center
-                justify-center
-                gap-3
-                rounded-[10px]
-                border
-                border-[#222]
-                text-[16px]
-                font-semibold
-                text-[#222]
-                transition
-                hover:bg-[#f7f7f7]
-              "
-            >
-
-              <span className="text-[22px]">
-                
-              </span>
-
-              Continue with Apple
-
-            </button>
-
-          </div>
-        )}
-
-
-        {/* PASSWORD SCREEN */}
-
-        {mode === "password" && (
-          <div className="px-8 pb-10 pt-16 sm:px-10">
-
             <h2
               className="
                 mb-2
+                text-center
                 text-[28px]
                 font-semibold
-                tracking-[-0.5px]
+                tracking-[-0.6px]
                 text-[#222]
               "
             >
-              Welcome
+              Create your account
             </h2>
 
-            <p className="mb-7 text-[15px] text-[#717171]">
-              Continue with <span className="font-semibold">{email}</span>
+            <p className="mb-7 text-center text-[15px] text-[#717171]">
+              Sign up to start your Airbnb journey
             </p>
 
+            <form onSubmit={handleSignup}>
 
-            <form onSubmit={handleSubmit}>
-
-              {/* PASSWORD */}
+              {/* EMAIL */}
+              <label className="mb-2 block text-[14px] font-semibold text-[#222]">
+                Email
+              </label>
 
               <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="
-                  h-[62px]
+                  h-[58px]
                   w-full
-                  rounded-[12px]
+                  rounded-[10px]
                   border
                   border-[#8c8c8c]
-                  px-5
-                  text-[17px]
+                  px-4
+                  text-[16px]
+                  text-[#222]
                   outline-none
-                  focus:border-[2px]
+                  placeholder:text-[#717171]
+                  focus:border-2
                   focus:border-black
                 "
               />
 
+              {/* PASSWORD */}
+              <label className="mb-2 mt-4 block text-[14px] font-semibold text-[#222]">
+                Password
+              </label>
+
+              <input
+                type="password"
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="
+                  h-[58px]
+                  w-full
+                  rounded-[10px]
+                  border
+                  border-[#8c8c8c]
+                  px-4
+                  text-[16px]
+                  text-[#222]
+                  outline-none
+                  placeholder:text-[#717171]
+                  focus:border-2
+                  focus:border-black
+                "
+              />
+
+              {/* CONFIRM PASSWORD */}
+              <label className="mb-2 mt-4 block text-[14px] font-semibold text-[#222]">
+                Confirm password
+              </label>
+
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="
+                  h-[58px]
+                  w-full
+                  rounded-[10px]
+                  border
+                  border-[#8c8c8c]
+                  px-4
+                  text-[16px]
+                  text-[#222]
+                  outline-none
+                  placeholder:text-[#717171]
+                  focus:border-2
+                  focus:border-black
+                "
+              />
 
               {/* ERROR */}
-
               {error && (
-                <p className="mt-3 text-[14px] font-medium text-red-600">
+                <div
+                  className="
+                    mt-3
+                    rounded-lg
+                    bg-[#fff1f2]
+                    px-3
+                    py-2
+                    text-[14px]
+                    font-medium
+                    text-[#c13515]
+                  "
+                >
                   {error}
-                </p>
+                </div>
               )}
 
-
-              {/* CONTINUE */}
-
+              {/* SIGNUP BUTTON */}
               <button
                 type="submit"
                 disabled={loading}
                 className="
                   mt-5
-                  h-[62px]
+                  h-[58px]
                   w-full
-                  rounded-[12px]
+                  rounded-[10px]
                   bg-[#E61E4D]
-                  text-[17px]
+                  text-[16px]
                   font-semibold
                   text-white
                   transition
@@ -410,159 +416,245 @@ const handleSubmit = async (e) => {
                   disabled:opacity-60
                 "
               >
-                {loading ? "Please wait..." : "Continue"}
-              </button>
-
-            </form>
-
-
-            {/* BACK */}
-
-            <button
-              onClick={() => {
-                setError("");
-                setPassword("");
-                setMode("initial");
-              }}
-              className="
-                mt-6
-                w-full
-                text-center
-                text-[14px]
-                font-semibold
-                underline
-              "
-            >
-              Back
-            </button>
-
-
-            {/* LOGIN / SIGNUP */}
-
-            <div className="mt-5 text-center text-[14px] text-[#717171]">
-
-              {mode === "password" && (
-                <>
-                  New to Airbnb?{" "}
-
-                  <button
-                    onClick={() => setMode("signup")}
-                    className="font-semibold text-black underline"
-                  >
-                    Create an account
-                  </button>
-                </>
-              )}
-
-            </div>
-
-          </div>
-        )}
-
-
-        {/* SIGNUP SCREEN */}
-
-        {mode === "signup" && (
-          <div className="px-8 pb-10 pt-16 sm:px-10">
-
-            <h2
-              className="
-                mb-2
-                text-[28px]
-                font-semibold
-                text-[#222]
-              "
-            >
-              Create your account
-            </h2>
-
-            <p className="mb-7 text-[15px] text-[#717171]">
-              You're creating an account with:
-            </p>
-
-            <form onSubmit={handleSubmit}>
-
-              <input
-                type="email"
-                value={email}
-                readOnly
-                className="
-                  h-[62px]
-                  w-full
-                  rounded-[12px]
-                  border
-                  border-[#8c8c8c]
-                  bg-[#f7f7f7]
-                  px-5
-                  text-[16px]
-                "
-              />
-
-              <input
-                type="password"
-                placeholder="Create password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="
-                  mt-4
-                  h-[62px]
-                  w-full
-                  rounded-[12px]
-                  border
-                  border-[#8c8c8c]
-                  px-5
-                  text-[16px]
-                  outline-none
-                  focus:border-[2px]
-                  focus:border-black
-                "
-              />
-
-              {error && (
-                <p className="mt-3 text-[14px] font-medium text-red-600">
-                  {error}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="
-                  mt-5
-                  h-[62px]
-                  w-full
-                  rounded-[12px]
-                  bg-[#E61E4D]
-                  text-[17px]
-                  font-semibold
-                  text-white
-                  disabled:opacity-60
-                "
-              >
                 {loading ? "Creating account..." : "Create account"}
               </button>
 
             </form>
 
+            {/* DIVIDER */}
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-[#dddddd]" />
+              <span className="text-[14px] text-[#717171]">
+                or
+              </span>
+              <div className="h-px flex-1 bg-[#dddddd]" />
+            </div>
 
+            {/* GOOGLE */}
             <button
-              onClick={() => {
-                setError("");
-                setPassword("");
-                setMode("initial");
-              }}
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={loading}
               className="
-                mt-6
+                flex
+                h-[56px]
                 w-full
-                text-center
-                text-[14px]
+                items-center
+                justify-center
+                gap-3
+                rounded-[10px]
+                border
+                border-[#222]
+                text-[15px]
                 font-semibold
-                underline
+                text-[#222]
+                transition
+                hover:bg-[#f7f7f7]
+                disabled:opacity-60
               "
             >
-              Back
+              <span className="text-[20px] font-bold">
+                G
+              </span>
+
+              Continue with Google
             </button>
+
+            {/* LOGIN LINK */}
+            <div className="mt-7 text-center text-[14px] text-[#717171]">
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => switchMode("login")}
+                className="font-semibold text-black underline"
+              >
+                Log in
+              </button>
+            </div>
+
+          </div>
+        )}
+
+        {/* =========================
+            LOGIN SCREEN
+        ========================= */}
+
+        {mode === "login" && (
+          <div className="px-7 pb-8 pt-14 sm:px-9">
+
+            {/* LOGO */}
+            <div className="mb-5 flex justify-center">
+              <img
+                src={logo}
+                alt="Airbnb"
+                className="h-[48px] w-[48px] object-contain"
+              />
+            </div>
+
+            {/* TITLE */}
+            <h2
+              className="
+                mb-2
+                text-center
+                text-[28px]
+                font-semibold
+                tracking-[-0.6px]
+                text-[#222]
+              "
+            >
+              Log in
+            </h2>
+
+            <p className="mb-7 text-center text-[15px] text-[#717171]">
+              Welcome back to Airbnb
+            </p>
+
+            <form onSubmit={handleLogin}>
+
+              {/* EMAIL */}
+              <label className="mb-2 block text-[14px] font-semibold text-[#222]">
+                Email
+              </label>
+
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="
+                  h-[58px]
+                  w-full
+                  rounded-[10px]
+                  border
+                  border-[#8c8c8c]
+                  px-4
+                  text-[16px]
+                  text-[#222]
+                  outline-none
+                  placeholder:text-[#717171]
+                  focus:border-2
+                  focus:border-black
+                "
+              />
+
+              {/* PASSWORD */}
+              <label className="mb-2 mt-4 block text-[14px] font-semibold text-[#222]">
+                Password
+              </label>
+
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="
+                  h-[58px]
+                  w-full
+                  rounded-[10px]
+                  border
+                  border-[#8c8c8c]
+                  px-4
+                  text-[16px]
+                  text-[#222]
+                  outline-none
+                  placeholder:text-[#717171]
+                  focus:border-2
+                  focus:border-black
+                "
+              />
+
+              {/* ERROR */}
+              {error && (
+                <div
+                  className="
+                    mt-3
+                    rounded-lg
+                    bg-[#fff1f2]
+                    px-3
+                    py-2
+                    text-[14px]
+                    font-medium
+                    text-[#c13515]
+                  "
+                >
+                  {error}
+                </div>
+              )}
+
+              {/* LOGIN BUTTON */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="
+                  mt-5
+                  h-[58px]
+                  w-full
+                  rounded-[10px]
+                  bg-[#E61E4D]
+                  text-[16px]
+                  font-semibold
+                  text-white
+                  transition
+                  hover:bg-[#D41142]
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                "
+              >
+                {loading ? "Logging in..." : "Log in"}
+              </button>
+
+            </form>
+
+            {/* DIVIDER */}
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-[#dddddd]" />
+              <span className="text-[14px] text-[#717171]">
+                or
+              </span>
+              <div className="h-px flex-1 bg-[#dddddd]" />
+            </div>
+
+            {/* GOOGLE */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              className="
+                flex
+                h-[56px]
+                w-full
+                items-center
+                justify-center
+                gap-3
+                rounded-[10px]
+                border
+                border-[#222]
+                text-[15px]
+                font-semibold
+                text-[#222]
+                transition
+                hover:bg-[#f7f7f7]
+                disabled:opacity-60
+              "
+            >
+              <span className="text-[20px] font-bold">
+                G
+              </span>
+
+              Continue with Google
+            </button>
+
+            {/* SIGNUP LINK */}
+            <div className="mt-7 text-center text-[14px] text-[#717171]">
+              Don't have an account?{" "}
+              <button
+                type="button"
+                onClick={() => switchMode("signup")}
+                className="font-semibold text-black underline"
+              >
+                Sign up
+              </button>
+            </div>
 
           </div>
         )}

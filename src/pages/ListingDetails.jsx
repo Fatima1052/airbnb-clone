@@ -1,11 +1,18 @@
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ListingDetailCalendar from "../Components/ListingDetailCalendar";
 import Gallery from "../Components/Gallery";
+import BookingCard, { defaultGuests } from "../Components/BookingCard";
+import ListingMap from "../Components/ListingMap";
+import HeartButton from "../Components/HeartButton";
 
 import {
   allListings,
   listingImages,
 } from "../data/listingsData";
+import { calculatePricing, formatMoney } from "../utils/pricing";
+import { useAuth } from "../AuthContext";
+import { useFavorites } from "../FavoritesContext";
 import ListingHeader from "../Components/ListingHeader";
 import {
   FiShare,
@@ -17,20 +24,37 @@ import {
 
 import laurelLeft from "../assests/laurel-left.png";
 import laurelRight from "../assests/laurel-right.png";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { getListingDetail } from "../services/listings";
 import { useEffect,  useState } from "react";
 
 function ListingDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isLoggedIn, openAuthModal } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const search = useSelector((state) => state.search);
 
   const property = allListings.find(
     (item) => item.id === Number(id)
   );
 
   const [detail, setDetail] = useState(null);
-  const [isSaved, setIsSaved] = useState(false);
 const [showShare, setShowShare] = useState(false);
+
+  // Start with whatever the visitor already picked in the search bar.
+  const [guests, setGuests] = useState(() => {
+    const total = search.adults + search.children + search.infants;
+
+    return total > 0
+      ? {
+          adults: Math.max(1, search.adults),
+          children: search.children,
+          infants: search.infants,
+          pets: search.pets,
+        }
+      : defaultGuests;
+  });
+  const [showStickyNav, setShowStickyNav] = useState(false);
 const handleShare = async () => {
   const shareData = {
     title: detail?.title || "Airbnb listing",
@@ -46,14 +70,28 @@ const handleShare = async () => {
       alert("Listing link copied!");
     }
   } catch (error) {
-    console.log("Share cancelled");
+    // The person closed the share sheet – nothing to do.
   }
 };
   const [loadingDetail, setLoadingDetail] = useState(true);
 const [dateRange, setDateRange] = useState([
-  null,
-  null,
+  search.startDate || null,
+  search.endDate || null,
 ]);
+
+  // The little "Photos · Amenities · Reviews · Location" bar appears once the
+  // photos have scrolled out of view.
+  useEffect(() => {
+    const onScroll = () => setShowStickyNav(window.scrollY > 560);
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (detail?.title) document.title = `${detail.title} - Airbnb`;
+  }, [detail?.title]);
 
 
   useEffect(() => {
@@ -61,14 +99,7 @@ const [dateRange, setDateRange] = useState([
       try {
         setLoadingDetail(true);
 
-        const detailRef = doc(db, "listingDetails", id);
-        const detailSnap = await getDoc(detailRef);
-
-        if (detailSnap.exists()) {
-          setDetail(detailSnap.data());
-        } else {
-          setDetail(null);
-        }
+        setDetail(await getListingDetail(id));
       } catch (error) {
         console.error("Error fetching listing detail:", error);
         setDetail(null);
@@ -119,21 +150,90 @@ const nights =
 
 const nightlyPrice = Number(detail.price) || 0;
 
+const pricing = calculatePricing(nightlyPrice, nights);
+
+const isSaved = isFavorite(String(property.id));
+
+const maxGuests = Number(detail.guests) || 4;
+
+// "Check availability" / clicking a date box: bring the calendar into view.
+const scrollToCalendar = () => {
+  document
+    .getElementById("availability")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+const reserve = () => {
+  if (!isLoggedIn) {
+    openAuthModal();
+    return;
+  }
+
+  const query = new URLSearchParams({
+    checkIn: startDate.format("YYYY-MM-DD"),
+    checkOut: endDate.format("YYYY-MM-DD"),
+    adults: guests.adults,
+    children: guests.children,
+    infants: guests.infants,
+    pets: guests.pets,
+  });
+
+  navigate(`/book/home/${property.id}?${query.toString()}`);
+};
+
+const scrollToSection = (sectionId) => {
+  document
+    .getElementById(sectionId)
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
 
-
-const stayTotal =
-  nights > 0
-    ? nightlyPrice * nights
-    : 0;
-
- 
 
   return (
     <>
       <ListingHeader />
 
-      <main className="min-h-screen bg-white text-[#222222]">
+      {/* Appears after scrolling past the photos, like on Airbnb. Fixed (not
+          sticky) so showing it never pushes the page down. */}
+      {showStickyNav && (
+        <div className="fixed inset-x-0 top-[80px] z-40 hidden border-b border-[#dddddd] bg-white md:block">
+          <div className="mx-auto flex max-w-[1120px] items-center justify-between px-8">
+            <nav className="flex gap-6 text-[14px] font-semibold">
+              {[
+                ["Photos", "photos"],
+                ["Amenities", "amenities"],
+                ["Reviews", "reviews"],
+                ["Location", "location"],
+              ].map(([label, target]) => (
+                <button
+                  key={target}
+                  type="button"
+                  onClick={() => scrollToSection(target)}
+                  className="border-b-2 border-transparent py-4 hover:border-[#222222]"
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <p className="text-[14px]">
+                <span className="font-semibold">{formatMoney(nightlyPrice)}</span>{" "}
+                night
+              </p>
+              <button
+                type="button"
+                onClick={nights > 0 ? reserve : scrollToCalendar}
+                className="rounded-[8px] bg-[#ff385c] px-5 py-2 text-[14px] font-semibold text-white hover:bg-[#e61e4d]"
+              >
+                {nights > 0 ? "Reserve" : "Check availability"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="min-h-screen bg-white pb-24 text-[#222222] md:pb-0">
 
         <div className="mx-auto max-w-[1120px] px-4 pb-20 pt-6 sm:px-6 md:px-8">
 
@@ -181,7 +281,7 @@ const stayTotal =
 
      <button
   type="button"
-  onClick={() => setIsSaved((prev) => !prev)}
+  onClick={() => toggleFavorite(String(property.id))}
   className="
     flex items-center gap-2
     rounded-[8px]
@@ -203,8 +303,30 @@ const stayTotal =
     </div>
   </div>
 
-  {/* AIRBNB STYLE LISTING INFO */}
-  
+  {/* Phones: the same Share / Save buttons, under the title */}
+  <div className="mt-3 flex gap-2 sm:hidden">
+    <button
+      type="button"
+      onClick={() => (navigator.share ? handleShare() : setShowShare(true))}
+      className="flex items-center gap-2 rounded-full border border-[#dddddd] px-4 py-2 text-[14px] font-semibold"
+    >
+      <FiShare size={16} />
+      Share
+    </button>
+
+    <button
+      type="button"
+      onClick={() => toggleFavorite(String(property.id))}
+      className="flex items-center gap-2 rounded-full border border-[#dddddd] px-4 py-2 text-[14px] font-semibold"
+    >
+      <FiHeart
+        size={16}
+        className={isSaved ? "fill-[#ff385c] text-[#ff385c]" : ""}
+      />
+      {isSaved ? "Saved" : "Save"}
+    </button>
+  </div>
+
 </section>
 
 {showShare && (
@@ -412,10 +534,12 @@ const stayTotal =
               GALLERY
           ========================== */}
 
-          <Gallery
-  images={imageUrls}
-  title={detail.title}
-/>
+          <div id="photos" className="scroll-mt-[140px]">
+            <Gallery
+              images={imageUrls}
+              title={detail.title}
+            />
+          </div>
 
           {/* =========================
               MAIN CONTENT
@@ -484,14 +608,14 @@ const stayTotal =
       <div className="flex items-center gap-6">
 
         {/* LEFT RATING */}
-        <div className="flex shrink-0 flex-col items-center justify-center">
+        <div className="flex w-[96px] shrink-0 flex-col items-center justify-center text-center">
 
           <p className="text-[22px] font-semibold text-[#222222]">
            ★ {detail.rating}
           </p>
 
           <p className="mt-1 text-[12px] text-[#555555]">
-          {detail.guestFavoriteText}
+            Guest rating
           </p>
 
         </div>
@@ -684,7 +808,7 @@ const stayTotal =
               <div className="my-8 border-t border-[#dddddd]" />
 {/* WHAT THIS PLACE OFFERS */}
 
-<section>
+<section id="amenities" className="scroll-mt-[140px]">
 
   <h2 className="text-[22px] font-semibold leading-[28px] text-[#222222]">
     What this place offers
@@ -830,150 +954,18 @@ const stayTotal =
 
             <aside>
 
-              <div
-                className="
-                  sticky
-                  top-[100px]
-                  rounded-[16px]
-                  border
-                  border-[#dddddd]
-                  bg-white
-                  p-6
-                  shadow-[0_6px_20px_rgba(0,0,0,0.12)]
-                "
-              >
-
-                {/* PRICE */}
-
-                <div className="flex items-baseline gap-1">
-
-  <span className="text-[22px] font-semibold">
-    {nights > 0
-      ? `$${stayTotal.toLocaleString()} for ${nights} ${
-          nights === 1 ? "night" : "nights"
-        }`
-      : "Add dates for prices"}
-  </span>
-
-  {nights === 0 && (
-    <span className="text-[14px] text-[#555555]">
-      night
-    </span>
-  )}
-
-</div>
-
-
-                {/* RATING */}
-
-                <div className="mt-2 text-[13px]">
-  ★ {detail.rating}
-</div>
-
-
-                {/* DATE / GUEST BOX */}
-
-                <div className="mt-5 overflow-hidden rounded-[10px] border border-[#777777]">
-
-                  <div className="grid grid-cols-2">
-
-                    <button
-                      type="button"
-                      className="
-                        border-r
-                        border-[#777777]
-                        p-3
-                        text-left
-                        hover:bg-[#f7f7f7]
-                      "
-                    >
-
-                    <p className="mt-1 text-[13px] text-[#666666]">
-  {startDate
-    ? startDate.format("MMM D, YYYY")
-    : "Add date"}
-</p>
-
-                      
-
-                    </button>
-
-
-                    <button
-                      type="button"
-                      className="
-                        p-3
-                        text-left
-                        hover:bg-[#f7f7f7]
-                      "
-                    >
-
-                     <p className="mt-1 text-[13px] text-[#666666]">
-  {endDate
-    ? endDate.format("MMM D, YYYY")
-    : "Add date"}
-</p>
-
-                      
-
-                    </button>
-
-                  </div>
-
-
-                  <button
-                    type="button"
-                    className="
-                      w-full
-                      border-t
-                      border-[#777777]
-                      p-3
-                      text-left
-                      hover:bg-[#f7f7f7]
-                    "
-                  >
-
-                    <p className="text-[10px] font-bold uppercase">
-                      Guests
-                    </p>
-
-                    <p className="mt-1 text-[13px] text-[#666666]">
-                      {detail.guests || 1} guest{(detail.guests || 1) !== 1 ? "s" : ""}
-                    </p>
-
-                  </button>
-
-                </div>
-
-
-                {/* RESERVE */}
-
-                <button
-  type="button"
-  className="
-    mt-5
-    w-full
-    rounded-[10px]
-    bg-[#ff385c]
-    py-3
-    text-[15px]
-    font-semibold
-    text-white
-    transition
-    hover:bg-[#e61e4d]
-  "
->
-  {nights > 0 ? "Reserve" : "Check availability"}
-</button>
-
-
-                <p className="mt-3 text-center text-[12px] text-[#666666]">
-                  You won't be charged yet
-                </p>
-
-
-
-              </div>
+              <BookingCard
+                className="lg:sticky lg:top-[100px]"
+                unitPrice={nightlyPrice}
+                unit="night"
+                rating={detail.rating}
+                dateRange={dateRange}
+                onPickDates={scrollToCalendar}
+                guests={guests}
+                setGuests={setGuests}
+                maxGuests={maxGuests}
+                onReserve={reserve}
+              />
 
             </aside>
 
@@ -984,7 +976,7 @@ const stayTotal =
     GUEST FAVORITE - AIRBNB STYLE
 ========================= */}
 
-<section className="border-t border-[#dddddd] py-5">
+<section id="reviews" className="scroll-mt-[140px] border-t border-[#dddddd] py-5">
 
   {/* 5.0 + LAURELS */}
 
@@ -1613,33 +1605,21 @@ const stayTotal =
 
 <div className="my-8 border-t border-[#dddddd]" />
 
-<section>
+<section id="location" className="scroll-mt-[140px]">
 
   <h2 className="text-[22px] font-semibold leading-[28px]">
     Where you'll be
   </h2>
 
   <p className="mt-2 text-[15px] text-[#555555]">
-  {detail.location}
+  {detail.location}, Pakistan
 </p>
 
-  <div className="mt-6 flex h-[320px] items-center justify-center rounded-[18px] bg-[#eeeeee]">
-    <div className="text-center">
+  <ListingMap city={detail.location} />
 
-      <div className="text-[34px]">
-        📍
-      </div>
-
-     <p className="mt-2 font-medium">
-  {detail.location}
-</p>
-
-      <p className="mt-1 text-[13px] text-[#777777]">
-        Exact location provided after booking
-      </p>
-
-    </div>
-  </div>
+  <p className="mt-3 text-[13px] text-[#777777]">
+    Exact location provided after booking
+  </p>
 
 </section>
 
@@ -1987,95 +1967,72 @@ const stayTotal =
 
     {allListings
       .filter((listing) => listing.id !== property.id)
+      // same city first, then everything else
+      .sort(
+        (first, second) =>
+          Number(second.location === property.location) -
+          Number(first.location === property.location)
+      )
       .slice(0, 5)
-      .map((listing) => {
+      .map((listing) => (
+        <Link
+          key={listing.id}
+          to={`/listing/${listing.id}`}
+          className="block min-w-0"
+        >
 
-        const nearbyImages =
-          listingImages[listing.id] || [];
+          {/* IMAGE */}
 
-        const nearbyImage =
-          nearbyImages[0]?.url;
+          <div className="relative overflow-hidden rounded-[12px] bg-[#eeeeee]">
 
-        return (
-          <div
-            key={listing.id}
-            className="min-w-0"
-          >
+            <img
+              src={listing.image}
+              alt={listing.title}
+              loading="lazy"
+              className="
+                aspect-square
+                w-full
+                object-cover
+                transition
+                duration-300
+                hover:scale-105
+              "
+            />
 
-            {/* IMAGE */}
-
-            <div className="relative overflow-hidden rounded-[12px]">
-
-              {nearbyImage ? (
-                <img
-                  src={nearbyImage}
-                  alt={listing.title}
-                  className="
-                    aspect-square
-                    w-full
-                    object-cover
-                    transition
-                    duration-300
-                    hover:scale-105
-                  "
-                />
-              ) : (
-                <div className="aspect-square w-full bg-[#eeeeee]" />
-              )}
-
-              {/* HEART */}
-
-              <button
-                type="button"
-                className="
-                  absolute
-                  right-2
-                  top-2
-                  flex
-                  h-8
-                  w-8
-                  items-center
-                  justify-center
-                  rounded-full
-                  bg-white
-                  shadow-sm
-                "
-              >
-                ♡
-              </button>
-
-            </div>
-
-
-            {/* DETAILS */}
-
-            <div className="mt-3">
-
-              <p className="truncate text-[13px] font-semibold text-[#222222]">
-                {listing.title}
-              </p>
-
-              <p className="mt-1 truncate text-[12px] text-[#717171]">
-                {listing.location}
-              </p>
-
-              <p className="mt-1 text-[12px] text-[#717171]">
-                ★ {listing.rating || "4.8"}
-              </p>
-
-              <p className="mt-1 text-[12px] text-[#222222]">
-                <span className="font-semibold">
-                  ${listing.price}
-                </span>{" "}
-                night
-              </p>
-
-            </div>
+            <HeartButton
+              size={24}
+              saved={isFavorite(String(listing.id))}
+              onClick={() => toggleFavorite(String(listing.id))}
+              className="absolute right-1 top-1"
+            />
 
           </div>
-        );
 
-      })}
+
+          {/* DETAILS */}
+
+          <div className="mt-3">
+
+            <p className="truncate text-[13px] font-semibold text-[#222222]">
+              {listing.title}
+            </p>
+
+            <p className="mt-1 truncate text-[12px] text-[#717171]">
+              {listing.location}
+            </p>
+
+            <p className="mt-1 text-[12px] text-[#717171]">
+              ★ {listing.rating || "4.8"}
+            </p>
+
+            <p className="mt-1 text-[12px] font-semibold text-[#222222]">
+              {listing.price}
+            </p>
+
+          </div>
+
+        </Link>
+      ))}
 
   </div>
 
@@ -2093,6 +2050,35 @@ const stayTotal =
         </div>
 
       </main>
+
+      {/* Phones: price + reserve button pinned to the bottom, like the Airbnb app */}
+      <div className="fixed inset-x-0 bottom-0 z-[900] flex items-center justify-between gap-4 border-t border-[#dddddd] bg-white px-5 py-3 md:hidden">
+        <div className="min-w-0">
+          <p className="text-[16px] font-semibold">
+            {nights > 0
+              ? `${formatMoney(pricing.total)} total`
+              : `${formatMoney(nightlyPrice)} night`}
+          </p>
+
+          <button
+            type="button"
+            onClick={scrollToCalendar}
+            className="truncate text-[13px] underline"
+          >
+            {nights > 0
+              ? `${startDate.format("MMM D")} – ${endDate.format("MMM D")}`
+              : "Add dates"}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={nights > 0 ? reserve : scrollToCalendar}
+          className="shrink-0 rounded-[10px] bg-[#ff385c] px-6 py-3 text-[15px] font-semibold text-white"
+        >
+          {nights > 0 ? "Reserve" : "Check availability"}
+        </button>
+      </div>
     </>
   );
 }

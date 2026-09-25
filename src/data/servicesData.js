@@ -84,7 +84,7 @@ export const londonServices = [
 export const losAngelesService = [
 
 {
- id:1,
+ id:7,
  image:losangeles1,
  title:"For the love of Soccer LA Game Day Experiences",
  price:"From $95 / group",
@@ -93,7 +93,7 @@ export const losAngelesService = [
 },
 
 {
- id:2,
+ id:8,
  image:losangeles2,
  title:"LA Hair & Makeup by Ashanta Artistry",
  price:"From $200 / guest",
@@ -102,7 +102,7 @@ export const losAngelesService = [
 },
 
 {
- id:3,
+ id:9,
  image:losangeles3,
  title:"Scenic lifestyle photos by Emily",
 
@@ -112,7 +112,7 @@ export const losAngelesService = [
 },
 
 {
- id:4,
+ id:10,
  image:losangeles4,
  title:"Highly-curated men's haircuts MarVista by Saints",
  price:"From $70 / guest",
@@ -121,7 +121,7 @@ export const losAngelesService = [
 },
 
 {
- id:5,
+ id:11,
  image:losangeles5,
  title:"North Hollywood High-end skin care by Ticia",
  price:"From $100 / guest",
@@ -130,7 +130,7 @@ export const losAngelesService = [
 },
 
 {
- id:6,
+ id:12,
  image:losangeles6,
  title:"Los Angeles Editorial Lifestyle Portraits & Events",
 

@@ -1,28 +1,22 @@
 import Listings from "../Components/Listings";
-import { londonServices } from "../data/servicesData";
-import { losAngelesService} from "../data/servicesData";
-function ServicesPage(){
+import { londonServices, losAngelesService } from "../data/servicesData";
 
-return(
-<>
-<Listings
+function ServicesPage() {
+  return (
+    <>
+      <Listings
+        kind="service"
+        title="Services in London"
+        listings={londonServices}
+      />
 
-title="Services in London"
-
-listings={londonServices}
-
-/>
-
-<Listings
-
-title="Services in Los Angeles"
-
-listings={losAngelesService}
-
-/>
-</>
-)
-
+      <Listings
+        kind="service"
+        title="Services in Los Angeles"
+        listings={losAngelesService}
+      />
+    </>
+  );
 }
 
 export default ServicesPage;

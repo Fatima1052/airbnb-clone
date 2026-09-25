@@ -282,4 +282,6 @@ guestFavoriteText: listing.guestFavorite
   }
 };
 
-seedListingDetails();
+// Run this manually (e.g. from the browser console or a script) when you want
+// to re-seed Firestore. It must NOT run automatically on app start.
+export default seedListingDetails;

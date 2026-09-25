@@ -6,13 +6,12 @@ import {
   FiShare,
   FiHeart,
 } from "react-icons/fi";
-import { doc, getDoc } from "firebase/firestore";
 
 import {
   allListings,
   listingImages,
 } from "../data/listingsData";
-import { db } from "../firebase";
+import { getListingDetail } from "../services/listings";
 
 function PhotoGallery() {
   const navigate = useNavigate();
@@ -33,19 +32,7 @@ function PhotoGallery() {
       try {
         setLoading(true);
 
-        const detailRef = doc(
-          db,
-          "listingDetails",
-          id
-        );
-
-        const detailSnap = await getDoc(detailRef);
-
-        if (detailSnap.exists()) {
-          setDetail(detailSnap.data());
-        } else {
-          setDetail(null);
-        }
+        setDetail(await getListingDetail(id));
       } catch (error) {
         console.error(
           "Error loading photo gallery:",
