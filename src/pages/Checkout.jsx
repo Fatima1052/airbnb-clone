@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
-import { FiChevronLeft } from "react-icons/fi";
+import { FiCheckCircle, FiChevronLeft } from "react-icons/fi";
 
 import ListingHeader from "../Components/ListingHeader";
 import NotFound from "./NotFound";
@@ -28,6 +28,9 @@ function Checkout() {
 
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  // Set once the backend confirms the booking — swaps the whole page for a
+  // confirmation screen so "did it work?" has an obvious answer.
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
 
   const isHome = kind === "home";
   const item = isHome
@@ -75,12 +78,77 @@ function Checkout() {
 
   const image = isHome ? listingImages[item.id]?.[0]?.url || item.image : item.image;
 
+  const guestText = `${guestCount} guest${guestCount === 1 ? "" : "s"}${
+    guests.pets ? `, ${guests.pets} pet${guests.pets === 1 ? "" : "s"}` : ""
+  }`;
+
+  if (confirmedBooking) {
+    return (
+      <>
+        <ListingHeader maxWidth="max-w-[1120px]" />
+
+        <main className="mx-auto max-w-[640px] px-4 py-20 text-center sm:px-6">
+          <FiCheckCircle className="mx-auto text-[56px] text-[#008a05]" />
+
+          <h1 className="mt-6 text-[26px] font-semibold text-[#222222]">
+            Booking confirmed!
+          </h1>
+
+          <p className="mt-3 text-[16px] text-[#6a6a6a]">
+            Your reservation at <strong>{item.title}</strong> is booked.
+          </p>
+
+          <div className="mt-8 rounded-[16px] border border-[#dddddd] p-6 text-left">
+            <div className="flex gap-4">
+              <img
+                src={image}
+                alt={item.title}
+                className="h-[72px] w-[72px] rounded-[10px] object-cover"
+              />
+              <div>
+                <p className="text-[16px] font-semibold">{item.title}</p>
+                <p className="text-[14px] text-[#717171]">
+                  {isHome
+                    ? `${checkIn.format("MMM D")} – ${checkOut.format("MMM D, YYYY")}`
+                    : activityDate.format("dddd, MMM D, YYYY")}
+                </p>
+                <p className="text-[14px] text-[#717171]">{guestText}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-between border-t border-[#dddddd] pt-4 text-[16px] font-semibold">
+              <span>Total paid (USD)</span>
+              <span>{formatMoney(pricing.total)}</span>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <button
+              type="button"
+              onClick={() => navigate("/profile?tab=trips")}
+              className="rounded-[10px] bg-[#222222] px-6 py-3 text-[15px] font-semibold text-white hover:bg-black"
+            >
+              View my trips
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="rounded-[10px] border border-[#dddddd] px-6 py-3 text-[15px] font-semibold hover:bg-[#f7f7f7]"
+            >
+              Back to home
+            </button>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   const confirm = async () => {
     setMessage("");
     setSubmitting(true);
 
     try {
-      await createBooking({
+      const booking = await createBooking({
         kind,
         itemId: item.id,
         checkIn: checkIn?.format("YYYY-MM-DD"),
@@ -89,20 +157,18 @@ function Checkout() {
         guests,
         pricing,
       });
+
+      setConfirmedBooking(booking || true);
     } catch (error) {
       setMessage(
         error.message === "BOOKING_BACKEND_NOT_CONNECTED"
           ? "Booking isn't available yet – payments and reservations will work once the backend is connected."
-          : "Something went wrong. Please try again."
+          : error.message || "Something went wrong. Please try again."
       );
     } finally {
       setSubmitting(false);
     }
   };
-
-  const guestText = `${guestCount} guest${guestCount === 1 ? "" : "s"}${
-    guests.pets ? `, ${guests.pets} pet${guests.pets === 1 ? "" : "s"}` : ""
-  }`;
 
   const row = (label, value) => (
     <div className="flex justify-between py-1 text-[15px]">

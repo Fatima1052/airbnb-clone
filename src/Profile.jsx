@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import UserMenu from "./Components/UserMenu";
 import { useAuth } from "./AuthContext";
 import { getProfile, saveProfile } from "./services/profile";
+import { getMyBookings } from "./services/bookings";
+import { formatMoney } from "./utils/pricing";
 import logo from "./assests/airbnblogo.png";
 
 function Profile() {
@@ -46,6 +48,9 @@ const [activeSection, setActiveSection] = useState(
       ? searchParams.get("tab")
       : "about"
   );
+
+  const [trips, setTrips] = useState([]);
+  const [tripsLoading, setTripsLoading] = useState(true);
   // LOAD PROFILE
 
   useEffect(() => {
@@ -78,6 +83,29 @@ const [activeSection, setActiveSection] = useState(
 
     loadProfile();
   }, [currentUser?.uid, userName]);
+
+  // LOAD TRIPS (bookings) — only once the backend is reachable; getMyBookings()
+  // itself returns [] when REACT_APP_API_URL isn't set, so this is safe either way.
+
+  useEffect(() => {
+    const loadTrips = async () => {
+      if (!currentUser?.uid) {
+        setTripsLoading(false);
+        return;
+      }
+
+      try {
+        setTrips(await getMyBookings());
+      } catch (error) {
+        console.error("Trips load error:", error);
+        setTrips([]);
+      } finally {
+        setTripsLoading(false);
+      }
+    };
+
+    loadTrips();
+  }, [currentUser?.uid]);
 
   // SAVE PROFILE
 
@@ -473,22 +501,56 @@ const [activeSection, setActiveSection] = useState(
       Past trips
     </h2>
 
-    <div className="mt-8 rounded-2xl border border-[#dddddd] p-8">
-      <h3 className="text-[20px] font-semibold text-[#222222]">
-        No trips yet
-      </h3>
+    {tripsLoading ? (
+      <p className="mt-8 text-[15px] text-[#717171]">Loading your trips…</p>
+    ) : trips.length === 0 ? (
+      <div className="mt-8 rounded-2xl border border-[#dddddd] p-8">
+        <h3 className="text-[20px] font-semibold text-[#222222]">
+          No trips yet
+        </h3>
 
-      <p className="mt-2 text-[15px] text-[#717171]">
-        When you book a stay, your past trips will appear here.
-      </p>
+        <p className="mt-2 text-[15px] text-[#717171]">
+          When you book a stay, your past trips will appear here.
+        </p>
 
-      <button
-        onClick={() => navigate("/homes")}
-        className="mt-6 rounded-lg bg-[#222222] px-5 py-3 text-[15px] font-semibold text-white hover:bg-black"
-      >
-        Start exploring
-      </button>
-    </div>
+        <button
+          onClick={() => navigate("/homes")}
+          className="mt-6 rounded-lg bg-[#222222] px-5 py-3 text-[15px] font-semibold text-white hover:bg-black"
+        >
+          Start exploring
+        </button>
+      </div>
+    ) : (
+      <div className="mt-8 space-y-4">
+        {trips.map((trip) => (
+          <div
+            key={trip._id}
+            className="flex items-center justify-between gap-4 rounded-2xl border border-[#dddddd] p-6"
+          >
+            <div>
+              <h3 className="text-[18px] font-semibold text-[#222222]">
+                {trip.listing?.title || "Listing"}
+              </h3>
+              <p className="mt-1 text-[14px] text-[#717171]">
+                {trip.checkIn && trip.checkOut
+                  ? `${new Date(trip.checkIn).toLocaleDateString()} – ${new Date(
+                      trip.checkOut
+                    ).toLocaleDateString()}`
+                  : trip.date
+                  ? new Date(trip.date).toLocaleDateString()
+                  : ""}
+              </p>
+              <p className="mt-1 text-[13px] capitalize text-[#717171]">
+                {trip.status}
+              </p>
+            </div>
+            <p className="text-[16px] font-semibold text-[#222222]">
+              {formatMoney(trip.pricing?.total)}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 )}
 
