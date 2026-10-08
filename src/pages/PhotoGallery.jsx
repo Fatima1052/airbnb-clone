@@ -48,6 +48,25 @@ function PhotoGallery() {
     fetchDetail();
   }, [id]);
 
+  const handleShare = async () => {
+    const title = detail?.title || property?.title || "Airbnb listing";
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title,
+          text: `Check out this stay: ${title}`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Listing link copied!");
+      }
+    } catch (error) {
+      // The person closed the share sheet – nothing to do.
+    }
+  };
+
   const scrollToSection = (index) => {
     const section = sectionRefs.current[index];
 
@@ -128,6 +147,7 @@ function PhotoGallery() {
         <div className="flex items-center gap-1">
           <button
             type="button"
+            onClick={handleShare}
             className="
               flex
               items-center
