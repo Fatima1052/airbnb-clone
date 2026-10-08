@@ -5,6 +5,9 @@ import {
   FiArrowLeft,
   FiShare,
   FiHeart,
+  FiCopy,
+  FiFacebook,
+  FiMail,
 } from "react-icons/fi";
 
 import {
@@ -23,6 +26,7 @@ function PhotoGallery() {
 
   const [detail, setDetail] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const sectionRefs = useRef([]);
@@ -47,25 +51,6 @@ function PhotoGallery() {
 
     fetchDetail();
   }, [id]);
-
-  const handleShare = async () => {
-    const title = detail?.title || property?.title || "Airbnb listing";
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title,
-          text: `Check out this stay: ${title}`,
-          url: window.location.href,
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert("Listing link copied!");
-      }
-    } catch (error) {
-      // The person closed the share sheet – nothing to do.
-    }
-  };
 
   const scrollToSection = (index) => {
     const section = sectionRefs.current[index];
@@ -147,7 +132,7 @@ function PhotoGallery() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={handleShare}
+            onClick={() => setShowShare(true)}
             className="
               flex
               items-center
@@ -196,6 +181,105 @@ function PhotoGallery() {
           </button>
         </div>
       </header>
+
+      {/* ================= SHARE POPUP ================= */}
+      {showShare && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setShowShare(false)}
+        >
+          <div
+            className="relative w-full max-w-[520px] rounded-[16px] bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowShare(false)}
+              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-[22px] hover:bg-[#f7f7f7]"
+            >
+              ×
+            </button>
+
+            <h2 className="pr-8 text-[22px] font-semibold">
+              Share this place
+            </h2>
+
+            <div className="mt-6 flex items-center gap-4">
+              {images[0] && (
+                <img
+                  src={images[0].url}
+                  alt={detail?.title || property.title}
+                  className="h-[64px] w-[64px] rounded-[10px] object-cover"
+                />
+              )}
+
+              <div className="min-w-0">
+                <p className="truncate text-[16px] font-semibold">
+                  {detail?.title || property.title}
+                </p>
+                <p className="mt-1 text-[13px] text-[#717171]">
+                  {detail?.location || property.location}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-7 space-y-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    setShowShare(false);
+                    alert("Listing link copied!");
+                  } catch (error) {
+                    console.error("Copy failed:", error);
+                  }
+                }}
+                className="flex w-full items-center gap-4 rounded-[12px] p-4 text-left hover:bg-[#f7f7f7]"
+              >
+                <FiCopy size={21} />
+                <div>
+                  <p className="text-[15px] font-semibold">Copy link</p>
+                  <p className="mt-1 text-[13px] text-[#717171]">
+                    Copy this listing link
+                  </p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.open(
+                    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                      window.location.href
+                    )}`,
+                    "_blank"
+                  );
+                }}
+                className="flex w-full items-center gap-4 rounded-[12px] p-4 text-left hover:bg-[#f7f7f7]"
+              >
+                <FiFacebook size={21} />
+                <p className="text-[15px] font-semibold">Share on Facebook</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = `mailto:?subject=${encodeURIComponent(
+                    detail?.title || property.title
+                  )}&body=${encodeURIComponent(
+                    `Check out this stay: ${window.location.href}`
+                  )}`;
+                }}
+                className="flex w-full items-center gap-4 rounded-[12px] p-4 text-left hover:bg-[#f7f7f7]"
+              >
+                <FiMail size={21} />
+                <p className="text-[15px] font-semibold">Share by email</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ================= MAIN ================= */}
       <main className="mx-auto max-w-[1200px] px-5 pb-20 pt-8 sm:px-8 lg:px-10">
